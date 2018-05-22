@@ -1,4 +1,4 @@
-sw_vers -productVersion
+# sw_vers -productVersion
 context("SSH Configuration - existence")
 test_that("ssh directory exists", {
   expect_true(file.exists(path.expand("~/.ssh")))

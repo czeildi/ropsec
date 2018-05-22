@@ -12,6 +12,8 @@ Personal Workstation Safety Check
 
 The following functions are implemented:
 
+- `full_on_audit`
+
 ## Installation
 
 ```{r eval=FALSE}
@@ -32,3 +34,14 @@ packageVersion("ropsec")
 
 ```
 
+```{r}
+# full_audit_results <- full_on_audit()
+```
+
+
+## Collaborators
+
+- Bob Rudis @hrbrmstr
+- Kara Woo @karawoo
+- Karthik Ram @karthik
+- Ildi Czeller @czeildi
