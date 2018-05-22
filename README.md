@@ -1,3 +1,13 @@
+![](./man/figures/Loose_lips_might_sink_ships.jpg)
+
+# rOpenSci Unconf 18 Project : middlechild
+
+## Authors:
+
+- Ildiko Czeller
+- Karthik Ram
+- Bob Rudis
+- Kara Woo
 
 ropsec
 ======
