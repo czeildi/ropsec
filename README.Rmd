@@ -15,6 +15,7 @@ The following functions are implemented:
 - `full_on_audit()`
 - `sign_commits_with_key()`
 - `gh_store_key()`
+- `summarize_system_checks()`
 
 ## Installation
 
@@ -38,6 +39,8 @@ packageVersion("ropsec")
 
 ### Audit
 
+E.g. what ports are used.
+
 ```{r eval = FALSE}
 full_audit_results <- full_on_audit()
 ```
@@ -50,6 +53,14 @@ gh_store_key(key)
 ```
 
 <img src="man/figures/signed_commit.png" align="center"/>
+
+### Lightweight system checks
+
+```{r}
+ropsec::summarize_system_checks()
+```
+
+
 
 ## Collaborators
 
