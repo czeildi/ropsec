@@ -1,6 +1,6 @@
 ![](./man/figures/Loose_lips_might_sink_ships.jpg)
 
-# rOpenSci Unconf 18 Project : middlechild
+# rOpenSci Unconf 18 Project : ropsec
 
 ## Authors:
 
