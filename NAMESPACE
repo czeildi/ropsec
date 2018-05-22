@@ -2,6 +2,8 @@
 
 S3method(print,lynis_obj)
 export(full_on_audit)
+export(gh_store_key)
+export(sign_commits_with_key)
 import(stringi)
 import(sys)
 import(testthat)
