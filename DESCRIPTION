@@ -1,0 +1,30 @@
+Package: ropsec
+Type: Package
+Title: Personal Workstation Safety Check
+Version: 0.1.0
+Date: 2018-05-22
+Authors@R: c(
+    person("Ildiko", "Czeller", email = "czeildi@gmail.com", role = c("aut", "cre")), 
+    person("Karthik", "Ram", email = "karthik.ram@gmail.com", role = c("aut"), 
+           comment = c(ORCID = " 0000-0002-0233-1757")),
+    person("Kara", "Woo", role = "aut"),
+    person("Bob", "Rudis", email = "bob@rud.is", role = c("aut"), 
+           comment = c(ORCID = "0000-0001-5670-2640"))
+  )
+Maintainer: ropensci <ropensci@ropensci.org>
+Description: ropsec checkpoints are designed to help ensure personal and public
+    safety. Methods are provided to run "ropsec" checks on your system to ensure
+    your computing environment is as safe as possible from the perspectives of
+    confidentiality and integrity.
+URL: https://github.com/hrbrmstr/ropsec
+BugReports: https://github.com/hrbrmstr/ropsec/issues
+Encoding: UTF-8
+License: MIT + file LICENSE
+Suggests:
+    covr
+Depends:
+    R (>= 3.2.0)
+Imports:
+    testthat,
+    sys
+RoxygenNote: 6.0.1.9000
