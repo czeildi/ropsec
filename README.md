@@ -48,6 +48,8 @@ key <- sign_commits_with_key("John Doe", "john.doe@gmail.com", "password")
 gh_store_key(key)
 ```
 
+<img src="man/figures/signed_commit.png" align="center"/>
+
 Collaborators
 -------------
 
