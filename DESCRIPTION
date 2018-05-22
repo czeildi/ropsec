@@ -26,6 +26,9 @@ Suggests:
 Depends:
     R (>= 3.2.0)
 Imports:
+    gh,
+    git2r,
+    gpg,
     stringi,
     testthat,
     stats,
