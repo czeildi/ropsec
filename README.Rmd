@@ -56,11 +56,20 @@ gh_store_key(key)
 
 ### Lightweight system checks
 
-```{r}
+```{r eval=FALSE}
 ropsec::summarize_system_checks()
 ```
 
-
+```
+✔ | OK F W S | Context
+✔ |  1       | SSH Configuration - existence
+✔ |  2       | SSH Configuration - keys
+✔ |  1       | SSH Configuration - key size
+✔ |  1       | GPG Existence
+✔ |  1       | macOS requires password after sleep or screen saver kicks in [0.1 s]
+✖ |  0 1     | Firewall is enabled
+# ...
+```
 
 ## Collaborators
 
