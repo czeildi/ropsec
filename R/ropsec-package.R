@@ -12,7 +12,7 @@
 #' @author Karthik Ram (karthik.ram@@gmail.com)
 #' @author Bob Rudis (bob@@rud.is)
 #' @author Kara Woo
-#' @import testthat sys stringi
+#' @import testthat sys stringi openssl gpg
 #' @importFrom stats setNames
 #' @importFrom utils read.csv
 NULL
