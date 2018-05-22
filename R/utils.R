@@ -9,3 +9,17 @@ is_windows <- function() {
 is_linux <- function() {
   identical(tolower(Sys.info()[["sysname"]]), "linux")
 }
+
+find_perl <- function() {
+  perl <- Sys.which("perl")
+
+  if (perl == "") {
+    stop(
+      "Cannot find 'perl'. cloc requires perl to be installed and on the PATH.",
+      call. = FALSE
+    )
+  }
+
+  return(perl)
+
+}

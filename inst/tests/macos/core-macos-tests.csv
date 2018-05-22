@@ -1,0 +1,123 @@
+TestID,Type,Category,Group,OS,Description
+AUTH-9204,test,security,authentication,NA,Check users with an UID of zero
+AUTH-9208,test,security,authentication,NA,Check non-unique accounts in passwd file
+AUTH-9222,test,security,authentication,NA,Check for non unique groups
+AUTH-9226,test,security,authentication,NA,Check non unique group names
+AUTH-9234,test,security,authentication,NA,Query user accounts
+AUTH-9250,test,security,authentication,NA,Checking sudoers file
+AUTH-9252,test,security,authentication,NA,Check sudoers file
+AUTH-9262,test,security,authentication,NA,Checking presence password strength testing tools (PAM)
+AUTH-9264,test,security,authentication,NA,Checking presence pam.conf
+AUTH-9266,test,security,authentication,NA,Checking presence pam.d files
+AUTH-9278,test,security,authentication,NA,Checking LDAP pam status
+AUTH-9328,test,security,authentication,NA,Default umask values
+BOOT-5104,test,security,boot_services,NA,Determine service manager
+BOOT-5202,test,security,boot_services,NA,Check uptime of system
+BOOT-5260,test,security,boot_services,NA,Check single user mode for systemd
+CORE-1000,test,performance,system_integrity,NA,Check all system binaries
+CRYP-7902,test,security,crypto,NA,Check expire date of SSL certificates
+SSH-7402:test:security:ssh::Check for running SSH daemon:
+SSH-7404:test:security:ssh::Check SSH daemon file location:
+SSH-7408:test:security:ssh::Check SSH specific defined options:
+DBS-1804,test,security,databases,NA,Checking active MySQL process
+DBS-1818,test,security,databases,NA,MongoDB status
+DBS-1820,test,security,databases,NA,Check MongoDB authentication
+DBS-1826,test,security,databases,NA,Checking active PostgreSQL processes
+DBS-1880,test,security,databases,NA,Checking active Redis processes
+FILE-6310,test,security,filesystems,NA,"Checking /tmp, /home and /var directory"
+FILE-6354,test,security,filesystems,NA,Searching for old files in /tmp
+FILE-6363,test,security,filesystems,NA,Checking /var/tmp sticky bit
+FILE-6430,test,security,filesystems,NA,Disable mounting of some filesystems
+FILE-7524,test,security,file_permissions,NA,Perform file permissions check
+FINT-4310,test,security,file_integrity,NA,AFICK availability
+FINT-4314,test,security,file_integrity,NA,AIDE availability
+FINT-4318,test,security,file_integrity,NA,Osiris availability
+FINT-4322,test,security,file_integrity,NA,Samhain availability
+FINT-4326,test,security,file_integrity,NA,Tripwire availability
+FINT-4328,test,security,file_integrity,NA,OSSEC syscheck daemon running
+FINT-4330,test,security,file_integrity,NA,mtree availability
+FINT-4338,test,security,file_integrity,NA,osqueryd syscheck daemon running
+FINT-4350,test,security,file_integrity,NA,File integrity software installed
+FIRE-4524,test,security,firewalls,NA,Check for CSF presence
+FIRE-4532,test,security,firewalls,MacOS,Check macOS application firewall
+FIRE-4534,test,security,firewalls,MacOS,Check Little Snitch firewall
+FIRE-4590,test,security,firewalls,NA,Check firewall status
+FIRE-4594,test,security,firewalls,NA,Check for APF presence
+HOME-9302,test,security,homedirs,NA,Create list with home directories
+HOME-9310,test,security,homedirs,NA,Checking for suspicious shell history files
+HOME-9350,test,security,homedirs,NA,Collecting information from home directories
+HRDN-7220,test,security,hardening,NA,Check if one or more compilers are installed
+HRDN-7222,test,security,hardening,NA,Check compiler permissions
+HRDN-7230,test,security,hardening,NA,Check for malware scanner
+HTTP-6622,test,security,webservers,NA,Checking Apache presence
+HTTP-6624,test,security,webservers,NA,Testing main Apache configuration file
+HTTP-6626,test,security,webservers,NA,Testing other Apache configuration file
+HTTP-6632,test,security,webservers,NA,Determining all available Apache modules
+HTTP-6640,test,security,webservers,NA,Determining existence of specific Apache modules
+HTTP-6641,test,security,webservers,NA,Determining existence of specific Apache modules
+HTTP-6643,test,security,webservers,NA,Determining existence of specific Apache modules
+HTTP-6702,test,security,webservers,NA,Check nginx process
+INSE-8002,test,security,insecure_services,NA,Check for enabled inet daemon
+INSE-8050,test,security,insecure_services,MacOS,Check for insecure services on macOS systems
+LDAP-2219,test,security,ldap,NA,Check running OpenLDAP instance
+LOGG-2130,test,security,logging,NA,Check for running syslog daemon
+LOGG-2132,test,security,logging,NA,Check for running syslog-ng daemon
+LOGG-2136,test,security,logging,NA,Check for running systemd journal daemon
+LOGG-2154,test,security,logging,NA,Checking syslog configuration file
+LOGG-2160,test,security,logging,NA,Checking /etc/newsyslog.conf
+LOGG-2162,test,security,logging,NA,Checking directories in /etc/newsyslog.conf
+LOGG-2164,test,security,logging,NA,Checking files specified /etc/newsyslog.conf
+LOGG-2170,test,security,logging,NA,Checking log paths
+LOGG-2180,test,security,logging,NA,Checking open log files
+LOGG-2190,test,security,logging,NA,Checking for deleted files in use
+LOGG-2192,test,security,logging,NA,Checking for opened log files that are empty
+LOGG-2240,test,security,logging,NA,Check for running RFC 3195 compliant daemon
+MALW-3275,test,security,malware,NA,Check for chkrootkit
+MALW-3276,test,security,malware,NA,Check for Rootkit Hunter
+MALW-3278,test,security,malware,NA,Check for LMD
+MALW-3280,test,security,malware,NA,Check if anti-virus tool is installed
+NAME-4016,test,security,nameservices,NA,Check /etc/resolv.conf default domain
+NAME-4018,test,security,nameservices,NA,Check /etc/resolv.conf search domains
+NAME-4020,test,security,nameservices,NA,Check non default options
+NAME-4028,test,security,nameservices,NA,Check domain name
+NAME-4202,test,security,nameservices,NA,Check BIND status
+NAME-4402,test,security,nameservices,NA,Check duplicate line in /etc/hosts
+NAME-4404,test,security,nameservices,NA,Check /etc/hosts contains an entry for this server name
+NAME-4406,test,security,nameservices,NA,Check server hostname mapping
+NETW-2704,test,security,networking,NA,Basic nameserver configuration tests
+NETW-2705,test,security,networking,NA,Check availability two nameservers
+NETW-3001,test,security,networking,NA,Find default gateway (route)
+NETW-3004,test,security,networking,NA,Search available network interfaces
+NETW-3006,test,security,networking,NA,Get network MAC addresses
+NETW-3008,test,security,networking,NA,Get network IP addresses
+NETW-3012,test,security,networking,NA,Check listening ports
+NETW-3028,test,security,networking,NA,Checking connections in WAIT state
+NETW-3030,test,security,networking,NA,Checking DHCP client status
+PKGS-7303,test,security,ports_packages,NA,Query brew package manager
+PKGS-7398,test,security,ports_packages,NA,Check for package audit tool
+PKGS-7410,test,security,ports_packages,NA,Count installed kernel packages
+PRNT-2304,test,security,printers_spools,NA,Check cupsd status
+PRNT-2314,test,security,printers_spools,NA,Check lpd status
+PROC-3612,test,security,memory_processes,NA,Check dead or zombie processes
+PROC-3614,test,security,memory_processes,NA,Check heavy IO waiting based processes
+SCHD-7702,test,security,scheduling,NA,Check status of cron daemon
+SCHD-7704,test,security,scheduling,NA,Check crontab/cronjobs
+SCHD-7718,test,security,scheduling,NA,Check at users
+SHLL-6211,test,security,shells,NA,Checking available and valid shells
+SHLL-6220,test,security,shells,NA,Checking available and valid shells
+SHLL-6230,test,security,shells,NA,Perform umask check for shell configurations
+SNMP-3302,test,security,snmp,NA,Check for running SNMP daemon
+SSH-7402,test,security,ssh,NA,Check for running SSH daemon
+STRG-1902,test,security,storage_nfs,NA,Check rpcinfo registered programs
+STRG-1904,test,security,storage_nfs,NA,Check nfs rpc
+STRG-1906,test,security,storage_nfs,NA,Check nfs rpc
+STRG-1920,test,security,storage_nfs,NA,Checking NFS daemon
+TIME-3104,test,security,time,NA,Check for running NTP daemon or client
+TIME-3112,test,security,time,NA,Check active NTP associations ID's
+TIME-3116,test,security,time,NA,Check peers with stratum value of 16
+TIME-3120,test,security,time,NA,Check unreliable NTP peers
+TIME-3124,test,security,time,NA,Check selected time source
+TIME-3128,test,security,time,NA,Check preffered time source
+TIME-3132,test,security,time,NA,Check NTP falsetickers
+TIME-3170,test,security,time,NA,Check configuration files
+TOOL-5002,test,security,tooling,NA,Checking for automation tools

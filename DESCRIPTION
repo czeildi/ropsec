@@ -18,6 +18,7 @@ Description: Sobriety checkpoints are designed to help ensure personal and publi
     confidentiality and integrity.
 URL: https://github.com/ropenscilabs/ropsec
 BugReports: https://github.com/ropenscilabs/ropsec/issues
+SystemRequirements: lynis (macOS/Linux); 
 Encoding: UTF-8
 License: MIT + file LICENSE
 Suggests:
@@ -25,6 +26,9 @@ Suggests:
 Depends:
     R (>= 3.2.0)
 Imports:
+    stringi,
     testthat,
+    stats,
+    utils,
     sys
 RoxygenNote: 6.0.1.9000
