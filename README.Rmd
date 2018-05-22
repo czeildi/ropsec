@@ -4,6 +4,8 @@ output: rmarkdown::github_document
 
 # ropsec
 
+Personal Workstation Safety Check
+
 ## Description
 
 ## What's Inside The Tin
@@ -13,7 +15,7 @@ The following functions are implemented:
 ## Installation
 
 ```{r eval=FALSE}
-devtools::install_github("hrbrmstr/ropsec")
+devtools::install_github("ropenscilabs/ropsec")
 ```
 
 ```{r message=FALSE, warning=FALSE, error=FALSE, include=FALSE}

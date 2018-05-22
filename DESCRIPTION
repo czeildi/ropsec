@@ -12,12 +12,12 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-5670-2640"))
   )
 Maintainer: ropensci <ropensci@ropensci.org>
-Description: ropsec checkpoints are designed to help ensure personal and public
-    safety. Methods are provided to run "ropsec" checks on your system to ensure
+Description: Sobriety checkpoints are designed to help ensure personal and public
+    safety. Methods are provided to run "sobriety" checks on your system to ensure
     your computing environment is as safe as possible from the perspectives of
     confidentiality and integrity.
-URL: https://github.com/hrbrmstr/ropsec
-BugReports: https://github.com/hrbrmstr/ropsec/issues
+URL: https://github.com/ropenscilabs/ropsec
+BugReports: https://github.com/ropenscilabs/ropsec/issues
 Encoding: UTF-8
 License: MIT + file LICENSE
 Suggests:
