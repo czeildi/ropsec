@@ -34,6 +34,5 @@ Imports:
     stats,
     utils,
     openssl,
-    sys,
-    gpg
-RoxygenNote: 6.0.1.9000
+    sys
+RoxygenNote: 6.0.1

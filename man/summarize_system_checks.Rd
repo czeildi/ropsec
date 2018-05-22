@@ -13,5 +13,5 @@ testthat report
 Test system settings like ssh key, password requirement etc.
 }
 \examples{
-\dontrun(summarize_system_check())
+\dontrun{summarize_system_checks()}
 }
