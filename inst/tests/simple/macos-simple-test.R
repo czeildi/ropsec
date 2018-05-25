@@ -14,7 +14,7 @@ context("SSH Configuration - key size")
 test_that("ssh key size is appropriate", {
   if (file.exists(path.expand("~/.ssh/id_rsa.pub"))) {
     x <- openssl::read_pubkey("~/.ssh/id_rsa.pub")
-    expect_true(x$size >= 2048)
+    expect_true(x$size >= 2048, label = sprintf("Key size of [%s] is below recommended value", x$size))
   }
 })
 
@@ -25,8 +25,13 @@ test_that("gpg is configured", {
 
 context("macOS requires password after sleep or screen saver kicks in")
 test_that("macOS requires password after sleep or screen saver kicks in", {
-  x <- system("defaults read com.apple.screensaver askForPassword", intern = TRUE)
-  expect_true(x == 1)
+  macos_version <- get_macos_version()
+  if (grepl("10\\.13", macos_version)) {
+    testthat::skip("Test skipped on High Sierra. Please see <https://technology.siprep.org/askforpassword-and-askforpassworddelay-in-macos-10-13-high-sierra/> for details.")
+  } else {
+    x <- system("defaults read com.apple.screensaver askForPassword", intern = TRUE)
+    expect_true(x == 1)
+  }
 })
 
 context("Firewall is enabled")
@@ -55,4 +60,6 @@ test_that("~/.Renviron permissions are sane", {
   }
 })
 
+
+#https://technology.siprep.org/askforpassword-and-askforpassworddelay-in-macos-10-13-high-sierra/
 
