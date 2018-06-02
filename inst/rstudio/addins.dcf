@@ -1,0 +1,4 @@
+Name: Check your machine
+Description: Run system setting checks on your local machine
+Binding: summarize_system_checks
+Interactive: true

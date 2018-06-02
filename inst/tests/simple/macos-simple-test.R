@@ -25,7 +25,7 @@ test_that("gpg is configured", {
 
 context("macOS requires password after sleep or screen saver kicks in")
 test_that("macOS requires password after sleep or screen saver kicks in", {
-  macos_version <- get_macos_version()
+  macos_version <- ropsec:::get_macos_version()
   if (grepl("10\\.13", macos_version)) {
     testthat::skip("Test skipped on High Sierra. Please see <https://technology.siprep.org/askforpassword-and-askforpassworddelay-in-macos-10-13-high-sierra/> for details.")
   } else {
