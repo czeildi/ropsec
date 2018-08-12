@@ -22,11 +22,11 @@
 sign_commits_with_key <- function(name, email, passphrase = NULL, key = NULL) {
 
   if (missing(name)) {
-    name <- git2r::config()$global$user.name
+    name <- extract_git_option("user.name")
   }
 
   if (missing(email)) {
-    email <- git2r::config()$global$user.email
+    email <- extract_git_option("user.email")
   }
 
   if (is.null(name) | is.null(email)) {
@@ -57,7 +57,9 @@ sign_commits_with_key <- function(name, email, passphrase = NULL, key = NULL) {
 #' it; if it fails, it will print the public key for you to copy manually into
 #' GitHub.
 #'
-#' See https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/ for more information on tokens.
+#' See
+#' https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
+#' for more information on tokens.
 #'
 #' @param key A character string containing the ID of a key to use. See
 #'   [gpg::gpg_list_keys()]; if you haven't created a key, see
@@ -88,5 +90,14 @@ gh_store_key <- function(key, .token = NULL) {
         sep = "\n"
       )
     )
+  }
+}
+
+extract_git_option <- function(name) {
+  git_config <- git2r::config()
+  if (is.null(git_config[["local"]][[name]])) {
+    git_config[["global"]][[name]]
+  } else {
+    git_config[["local"]][[name]]
   }
 }
