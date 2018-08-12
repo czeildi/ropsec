@@ -3,14 +3,26 @@
 #' Configure git to sign all commits using GPG. If no existing key is provided,
 #' `sign_commits_with_key()` will create a new key and use it for signing.
 #'
+#' In case of already existing key(s) for convenience an appropriate key will be
+#' identified based on git config, or if git config is not set, it is sufficient
+#' to provide one of name or email. This is especially handy if you have
+#' multiple email addresses used with git and thus would like to set-up commit
+#' signing on a per-repo basis. In this case supply the email and set the global
+#' param to `FALSE`.
+#'
 #' @param name A character string containing your name. If not provided,
-#'   `sign_commits_with_key()` will look in your global git configuration.
+#'   `sign_commits_with_key()` will look first in your local then in your global
+#'   git configuration.
 #' @param email A character string containing your email address. If not
-#'   provided, `sign_commits_with_key()` will look in your global git
-#'   configuration.
-#' @param passphrase An optional passphrase to protect the keypair.
+#'   provided, `sign_commits_with_key()` will look first in your local then in
+#'   your global git configuration.
 #' @param key A character string containing the ID of a pre-existing key to use.
-#'   If `NULL`, a new key will be created.
+#'   If `NULL` and key cannot be found based on name and email unambiguously, a
+#'   new key will be created.
+#' @param global boolean, set commit signing in global or local got config.
+#' @param force_new boolean, if `TRUE` and key is `NULL`, new key will be generated
+#'   and used even if an existing key can be found based on name and email
+#'   unambiguously.
 #' @return A character string containing the ID of the key that was provided or
 #'   generated.
 #' @export
@@ -19,35 +31,37 @@
 #' \dontrun{
 #' newkey <- sign_commits_with_key("John Doe", "johndoe@example.com")
 #' }
-sign_commits_with_key <- function(name, email, passphrase = NULL, key = NULL) {
+sign_commits_with_key <- function(name, email, key = NULL, global = TRUE, force_new = FALSE) {
+  if (!is.null(key)) {
+    git2r::config(global = TRUE, user.signingkey = key, commit.gpgsign = "true")
+    return(key)
+  }
 
   if (missing(name)) {
     name <- extract_git_option("user.name")
   }
-
   if (missing(email)) {
     email <- extract_git_option("user.email")
   }
 
-  if (is.null(name) | is.null(email)) {
+  key_candidates <- get_key_candidates(name, email)
+
+  if (force_new | nrow(key_candidates) == 0L) {
+    key <- generate_key_with_name_and_email(name, email)
+  } else if (nrow(key_candidates) == 1L) {
+    message("Existing key found and will be used to sign commits.")
+    key <- key_candidates$id
+  } else {
+    message(paste0(capture.output(key_candidates), collapse = "\n"))
     stop(
-      "Name and email are required and not provided or available in the user's git config.",
+      "There are multiple keys, disambiguate with the key param or set force_new = TRUE to use a newly generated key.",
       call. = FALSE
     )
   }
 
-  if (is.null(key)) {
-    key <- gpg::gpg_keygen(
-      name = name,
-      email = email,
-      passphrase = passphrase
-    )
-  }
-
-  git2r::config(global = TRUE, user.signingkey = key, commit.gpgsign = "true")
+  git2r::config(global = global, user.signingkey = key, commit.gpgsign = "true")
 
   return(key)
-
 }
 
 #' Add a public key to your GitHub account
@@ -73,7 +87,6 @@ sign_commits_with_key <- function(name, email, passphrase = NULL, key = NULL) {
 #' gh_store_key(newkey)
 #' }
 gh_store_key <- function(key, .token = NULL) {
-
   pubkey <- gpg::gpg_export(key)
 
   gh_attempt <- try(
@@ -100,4 +113,33 @@ extract_git_option <- function(name) {
   } else {
     git_config[["local"]][[name]]
   }
+}
+
+get_key_candidates <- function(user_name, user_email) {
+  existing_keys <- gpg::gpg_list_keys()
+  if (is.null(user_name) | is.null(user_email)) {
+    subset(
+      existing_keys, name == user_name | email == user_email
+    )
+  } else {
+    subset(
+      existing_keys, name == user_name & email == user_email
+    )
+  }
+}
+
+generate_key_with_name_and_email <- function(name, email) {
+  if (is.null(name) | is.null(email)) {
+    stop(
+      "Name and email are required to generate a gpg key and are not provided or available in the user's git config.",
+      call. = FALSE
+    )
+  }
+
+  passphrase <- getPass::getPass(msg = "Please enter password for new gpg key:")
+  gpg::gpg_keygen(
+    name = name,
+    email = email,
+    passphrase = passphrase
+  )
 }

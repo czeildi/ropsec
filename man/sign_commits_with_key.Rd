@@ -4,20 +4,27 @@
 \alias{sign_commits_with_key}
 \title{GPG sign all git commits}
 \usage{
-sign_commits_with_key(name, email, passphrase = NULL, key = NULL)
+sign_commits_with_key(name, email, key = NULL, global = TRUE,
+  force_new = FALSE)
 }
 \arguments{
 \item{name}{A character string containing your name. If not provided,
-`sign_commits_with_key()` will look in your global git configuration.}
+`sign_commits_with_key()` will look first in your local then in your global
+git configuration.}
 
 \item{email}{A character string containing your email address. If not
-provided, `sign_commits_with_key()` will look in your global git
-configuration.}
-
-\item{passphrase}{An optional passphrase to protect the keypair.}
+provided, `sign_commits_with_key()` will look first in your local then in
+your global git configuration.}
 
 \item{key}{A character string containing the ID of a pre-existing key to use.
-If `NULL`, a new key will be created.}
+If `NULL` and key cannot be found based on name and email unambiguously, a
+new key will be created.}
+
+\item{global}{boolean, set commit signing in global or local got config.}
+
+\item{force_new}{boolean, if `TRUE` and key is `NULL`, new key will be generated
+and used even if an existing key can be found based on name and email
+unambiguously.}
 }
 \value{
 A character string containing the ID of the key that was provided or
@@ -26,6 +33,14 @@ A character string containing the ID of the key that was provided or
 \description{
 Configure git to sign all commits using GPG. If no existing key is provided,
 `sign_commits_with_key()` will create a new key and use it for signing.
+}
+\details{
+In case of already existing key(s) for convenience an appropriate key will be
+identified based on git config, or if git config is not set, it is sufficient
+to provide one of name or email. This is especially handy if you have
+multiple email addresses used with git and thus would like to set-up commit
+signing on a per-repo basis. In this case supply the email and set the global
+param to `FALSE`.
 }
 \examples{
 \dontrun{
