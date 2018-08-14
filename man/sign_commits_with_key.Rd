@@ -35,7 +35,9 @@ identified based on git config, or if git config is not set, it is sufficient
 to provide one of name or email. This is especially handy if you have
 multiple email addresses used with git and thus would like to set-up commit
 signing on a per-repo basis. In this case supply the email and set the global
-param to `FALSE`.
+param to `FALSE`. If you accidentally set that all commits should be signed
+you can revert this by deleting the `commit.gpgsign` and `user.signingkey` git
+options.
 }
 \examples{
 \dontrun{
