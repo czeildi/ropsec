@@ -117,20 +117,26 @@ extract_git_option <- function(name) {
 
 get_key_candidates <- function(user_name, user_email) {
   existing_keys <- gpg::gpg_list_keys()
+  filter_keys_on_name_and_email_if_provided(
+    existing_keys, user_name, user_email
+  )
+}
+
+filter_keys_on_name_and_email_if_provided <- function(keys, user_name, user_email) {
   if (is.null(user_name)) {
     subset(
-      existing_keys,
-      existing_keys$email == user_email
+      keys,
+      keys$email == user_email
     )
   } else if (is.null(user_email)) {
     subset(
-      existing_keys,
-      existing_keys$name == user_name
+      keys,
+      keys$name == user_name
     )
   } else {
     subset(
-      existing_keys,
-      existing_keys$name == user_name & existing_keys$email == user_email
+      keys,
+      keys$name == user_name & keys$email == user_email
     )
   }
 }
