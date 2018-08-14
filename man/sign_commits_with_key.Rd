@@ -4,8 +4,7 @@
 \alias{sign_commits_with_key}
 \title{GPG sign all git commits}
 \usage{
-sign_commits_with_key(name, email, key = NULL, global = TRUE,
-  force_new = FALSE)
+sign_commits_with_key(name, email, key = NULL, global = TRUE)
 }
 \arguments{
 \item{name}{A character string containing your name. If not provided,
@@ -20,11 +19,7 @@ your global git configuration.}
 If `NULL` and key cannot be found based on name and email unambiguously, a
 new key will be created.}
 
-\item{global}{boolean, set commit signing in global or local got config.}
-
-\item{force_new}{boolean, if `TRUE` and key is `NULL`, new key will be generated
-and used even if an existing key can be found based on name and email
-unambiguously.}
+\item{global}{boolean, set commit signing in global or local git config.}
 }
 \value{
 A character string containing the ID of the key that was provided or

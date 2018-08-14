@@ -19,10 +19,7 @@
 #' @param key A character string containing the ID of a pre-existing key to use.
 #'   If `NULL` and key cannot be found based on name and email unambiguously, a
 #'   new key will be created.
-#' @param global boolean, set commit signing in global or local got config.
-#' @param force_new boolean, if `TRUE` and key is `NULL`, new key will be generated
-#'   and used even if an existing key can be found based on name and email
-#'   unambiguously.
+#' @param global boolean, set commit signing in global or local git config.
 #' @return A character string containing the ID of the key that was provided or
 #'   generated.
 #' @export
@@ -31,7 +28,7 @@
 #' \dontrun{
 #' newkey <- sign_commits_with_key("John Doe", "johndoe@example.com")
 #' }
-sign_commits_with_key <- function(name, email, key = NULL, global = TRUE, force_new = FALSE) {
+sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
   if (!is.null(key)) {
     git2r::config(global = TRUE, user.signingkey = key, commit.gpgsign = "true")
     return(key)
@@ -46,7 +43,7 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE, force_
 
   key_candidates <- get_key_candidates(name, email)
 
-  if (force_new | nrow(key_candidates) == 0L) {
+  if (nrow(key_candidates) == 0L) {
     key <- generate_key_with_name_and_email(name, email)
   } else if (nrow(key_candidates) == 1L) {
     message("Existing key found and will be used to sign commits.")
@@ -54,7 +51,7 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE, force_
   } else {
     message(paste0(capture.output(key_candidates), collapse = "\n"))
     stop(
-      "There are multiple keys, disambiguate with the key param or set force_new = TRUE to use a newly generated key.",
+      "There are multiple keys, you must disambiguate with providing the key param.",
       call. = FALSE
     )
   }
