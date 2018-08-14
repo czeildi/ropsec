@@ -8,7 +8,10 @@
 #' to provide one of name or email. This is especially handy if you have
 #' multiple email addresses used with git and thus would like to set-up commit
 #' signing on a per-repo basis. In this case supply the email and set the global
-#' param to `FALSE`.
+#' param to `FALSE`. If you accidentally set that all commits should be signed
+#' you can revert this by deleting the `commit.gpgsign` and `user.signingkey` git
+#' options.
+#'
 #'
 #' @param name A character string containing your name. If not provided,
 #'   `sign_commits_with_key()` will look first in your local then in your global
@@ -49,7 +52,7 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
     message("Existing key found and will be used to sign commits.")
     key <- key_candidates$id
   } else {
-    message(paste0(capture.output(key_candidates), collapse = "\n"))
+    message(paste0(utils::capture.output(key_candidates), collapse = "\n"))
     stop(
       "There are multiple keys, you must disambiguate with providing the key param.",
       call. = FALSE
@@ -116,11 +119,13 @@ get_key_candidates <- function(user_name, user_email) {
   existing_keys <- gpg::gpg_list_keys()
   if (is.null(user_name) | is.null(user_email)) {
     subset(
-      existing_keys, name == user_name | email == user_email
+      existing_keys,
+      existing_keys$name == user_name | existing_keys$email == user_email
     )
   } else {
     subset(
-      existing_keys, name == user_name & email == user_email
+      existing_keys,
+      existing_keys$name == user_name & existing_keys$email == user_email
     )
   }
 }
@@ -132,8 +137,9 @@ generate_key_with_name_and_email <- function(name, email) {
       call. = FALSE
     )
   }
-
-  passphrase <- getPass::getPass(msg = "Please enter password for new gpg key:")
+  passphrase <- readline(
+    prompt = "Please enter password for new gpg key (can be blank): "
+  )
   gpg::gpg_keygen(
     name = name,
     email = email,
