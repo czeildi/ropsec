@@ -33,7 +33,7 @@
 #' }
 sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
   if (!is.null(key)) {
-    git2r::config(global = TRUE, user.signingkey = key, commit.gpgsign = "true")
+    git2r::config(global = global, user.signingkey = key, commit.gpgsign = "true")
     return(key)
   }
 
