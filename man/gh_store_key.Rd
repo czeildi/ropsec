@@ -20,7 +20,9 @@ it; if it fails, it will print the public key for you to copy manually into
 GitHub.
 }
 \details{
-See https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/ for more information on tokens.
+See
+https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
+for more information on tokens.
 }
 \examples{
 \dontrun{

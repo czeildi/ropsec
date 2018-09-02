@@ -59,7 +59,12 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
     )
   }
 
-  git2r::config(global = global, user.signingkey = key, commit.gpgsign = "true")
+  git2r::config(
+    global = global,
+    user.signingkey = key,
+    commit.gpgsign = "true",
+    user.email = email
+  )
 
   return(key)
 }
