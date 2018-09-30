@@ -29,7 +29,8 @@ A character string containing the ID of the key that was provided or
 \description{
 Configure git to sign all commits using GPG. If no existing key is provided
 or found, `sign_commits_with_key()` will create a new key and use it for
-signing.
+signing. This function is suitable only for interactive use, before changing
+the user's git config it will always ask for confirmation.
 }
 \details{
 In case of already existing key(s) for convenience an appropriate key will be

@@ -86,6 +86,45 @@ test_that("if one existing key found, it is communicated in message", {
   )
 })
 
+test_that("set_key_to_sign_commits: if user did not confirm, git2r config not called and NULL returned", {
+  mockery::stub(set_key_to_sign_commits, "require_confirmation_from_user", FALSE)
+  git_config_mock <- mockery::mock()
+  mockery::stub(set_key_to_sign_commits, "git2r::config", git_config_mock)
+  expect_null(set_key_to_sign_commits("test_key", global = FALSE))
+  mockery::expect_called(git_config_mock, 0)
+})
+
+test_that("set_key_to_sign_commits: if user did confirm, git2r config is called with appropriate params and key returned", {
+  mockery::stub(set_key_to_sign_commits, "require_confirmation_from_user", TRUE)
+  mockery::stub(set_key_to_sign_commits, "extract_email_for_key", "jd@example.com")
+  git_config_mock <- mockery::mock()
+  mockery::stub(set_key_to_sign_commits, "git2r::config", git_config_mock)
+  expect_equal(set_key_to_sign_commits("test_key", global = FALSE), "test_key")
+  mockery::expect_args(
+    git_config_mock, 1,
+    global = FALSE, user.signingkey = "test_key",
+    commit.gpgsign = "true",
+    user.email = "jd@example.com"
+  )
+})
+
+test_that("set_key_to_sign_commits: ask for confirmation with meaningful message", {
+  ask_stub <- mockery::mock(FALSE)
+  mockery::stub(set_key_to_sign_commits, "require_confirmation_from_user", ask_stub)
+  mockery::stub(set_key_to_sign_commits, "extract_email_for_key", "jd@example.com")
+  mockery::stub(set_key_to_sign_commits, "extract_git_option", "jd2@company.com")
+  set_key_to_sign_commits("test_id", global = FALSE)
+  mockery::expect_args(
+    ask_stub, 1,
+    message = paste0(
+      "Do you want to sign all future commits with `test_id` ",
+      "in this repository?\n",
+      "This will also set your user.email ",
+      "from jd2@company.com to jd@example.com.\n"
+    )
+  )
+})
+
 test_that("find matching existing keys: no matching keys returned if initial df is empty", {
   df <- data.frame(name = character(0), email = character(0))
   expect_equal(
