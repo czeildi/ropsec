@@ -82,7 +82,7 @@ test_that("if one existing key found, it is communicated in message", {
   )
   expect_message(
     sign_commits_with_key(email = "jd@example.com"),
-    "Existing key found and will be used to sign commits."
+    "Existing key found: test_id.\nCorresponding email: jd@example.com"
   )
 })
 
@@ -139,7 +139,9 @@ test_that("extract git option: locally available", {
     )
   )
   mockery::stub(extract_git_option, "git2r::config", git_config_mock)
-  expect_equal(extract_git_option("my_option"), "local_value")
+  expected <- "local_value"
+  attr(expected, "local") <- TRUE
+  expect_equal(extract_git_option("my_option"), expected)
 })
 
 test_that("extract git option: only globally available", {
@@ -150,7 +152,9 @@ test_that("extract git option: only globally available", {
     )
   )
   mockery::stub(extract_git_option, "git2r::config", git_config_mock)
-  expect_equal(extract_git_option("my_option"), "global_value")
+  expected <- "global_value"
+  attr(expected, "local") <- FALSE
+  expect_equal(extract_git_option("my_option"), expected)
 })
 
 test_that("extract git option: not available", {
@@ -172,5 +176,27 @@ test_that("generate key: if no password, use NULL", {
   mockery::expect_args(
     keygen_mock, 1,
     name = "John Doe", email = "jd@example.com", passphrase = NULL
+  )
+})
+
+test_that("generate key: message used name and email", {
+  mockery::stub(generate_key_with_name_and_email, "readline", "")
+  mockery::stub(generate_key_with_name_and_email, "gpg::gpg_keygen", NULL)
+  expect_message(
+    generate_key_with_name_and_email("John Doe", "jd@example.com"),
+    "`John Doe` \\(as provided\\).*`jd@example\\.com` \\(as provided\\)"
+  )
+})
+
+test_that("generate key: message based on source of param", {
+  mockery::stub(generate_key_with_name_and_email, "readline", "")
+  mockery::stub(generate_key_with_name_and_email, "gpg::gpg_keygen", NULL)
+  name <- "John Doe"
+  attr(name, "local") <- TRUE
+  email <- "jd@example.com"
+  attr(email, "local") <- FALSE
+  expect_message(
+    generate_key_with_name_and_email(name, email),
+    ".*\\(based on local git config\\).*\\(based on global git config\\)"
   )
 })
