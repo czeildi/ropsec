@@ -52,11 +52,7 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
     message("Existing key found and will be used to sign commits.")
     key <- key_candidates$id
   } else {
-    message(paste0(utils::capture.output(key_candidates), collapse = "\n"))
-    stop(
-      "There are multiple keys, you must disambiguate with providing the key param.",
-      call. = FALSE
-    )
+    stopDueToMultipleKeys(key_candidates)
   }
 
   git2r::config(
@@ -162,3 +158,14 @@ generate_key_with_name_and_email <- function(name, email) {
     passphrase = passphrase
   )
 }
+
+stopDueToMultipleKeys <- function(key_candidates) {
+  stop(
+    paste0(utils::capture.output(key_candidates), collapse = "\n"),
+    "There are multiple keys,\n",
+    "you must disambiguate with providing the key param or",
+    "deleting the keys you do not want to use.",
+    call. = FALSE
+  )
+}
+
