@@ -43,16 +43,21 @@
 #' sign_commits_with_key(key = "test_key", global = FALSE)
 #' }
 sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
-  if (!is.null(key)) {
-    git2r::config(global = global, user.signingkey = key, commit.gpgsign = "true")
-    return(key)
-  }
-
   if (missing(name)) {
     name <- extract_git_option("user.name")
   }
   if (missing(email)) {
     email <- extract_git_option("user.email")
+  }
+
+  if (!is.null(key)) {
+    git2r::config(
+      global = global,
+      user.signingkey = key,
+      commit.gpgsign = "true",
+      user.email = email
+    )
+    return(key)
   }
 
   key_candidates <- get_key_candidates(name, email)
