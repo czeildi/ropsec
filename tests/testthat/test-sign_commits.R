@@ -108,15 +108,12 @@ test_that("set_key_to_sign_commits: if user did confirm, git2r config is called 
   )
 })
 
-test_that("set_key_to_sign_commits: ask for confirmation with meaningful message", {
-  ask_stub <- mockery::mock(FALSE)
-  mockery::stub(set_key_to_sign_commits, "require_confirmation_from_user", ask_stub)
-  mockery::stub(set_key_to_sign_commits, "extract_email_for_key", "jd@example.com")
-  mockery::stub(set_key_to_sign_commits, "extract_git_option", "jd2@company.com")
-  set_key_to_sign_commits("test_id", global = FALSE)
-  mockery::expect_args(
-    ask_stub, 1,
-    message = paste0(
+test_that("assemble_confirmation_message: ask for confirmation with meaningful message", {
+  mockery::stub(assemble_confirmation_message, "extract_email_for_key", "jd@example.com")
+  mockery::stub(assemble_confirmation_message, "extract_git_option", "jd2@company.com")
+  expect_equal(
+    assemble_confirmation_message("test_id", "global" = FALSE),
+    paste0(
       "Do you want to sign all future commits with `test_id` ",
       "in this repository?\n",
       "This will also set your user.email ",
