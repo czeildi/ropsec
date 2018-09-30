@@ -63,10 +63,10 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
     key <- key_candidates$id
     message(
       "Existing key found: ", key, ".\n",
-      "Corresponding email: ", email, communicateSourceOfParam(email), ".\n"
+      "Corresponding email: ", email, communicate_source_of_param(email), ".\n"
     )
   } else {
-    stopDueToMultipleKeys(key_candidates)
+    stop_due_to_multiple_keys(key_candidates)
   }
 
   set_key_to_sign_commits(key, global)
@@ -115,11 +115,11 @@ gh_store_key <- function(key, .token = NULL) {
 }
 
 set_key_to_sign_commits <- function(key, global) {
+  new_git_user_email <- extract_email_for_key(key)
   original_git_user_email <- extract_git_option("user.email", allow_global = global)
   if (is.null(original_git_user_email)) {
     original_git_user_email <- ""
   }
-  new_git_user_email <- extract_email_for_key(key)
   confirmation_message <- paste0(
     "Do you want to sign all future commits with `", key, "` in ",
     ifelse(global, "all repositories?", "this repository?"), "\n",
@@ -191,8 +191,8 @@ generate_key_with_name_and_email <- function(name, email) {
     )
   }
   message(
-    "`", name, "`", communicateSourceOfParam(name), " and\n",
-    "`", email, "`", communicateSourceOfParam(email), "\n",
+    "`", name, "`", communicate_source_of_param(name), " and\n",
+    "`", email, "`", communicate_source_of_param(email), "\n",
     "will be used to generate a new gpg key."
   )
   passphrase <- readline(
@@ -208,7 +208,7 @@ generate_key_with_name_and_email <- function(name, email) {
   )
 }
 
-stopDueToMultipleKeys <- function(key_candidates) {
+stop_due_to_multiple_keys <- function(key_candidates) {
   stop(
     paste0(utils::capture.output(key_candidates), collapse = "\n"),
     "There are multiple keys,\n",
@@ -218,7 +218,7 @@ stopDueToMultipleKeys <- function(key_candidates) {
   )
 }
 
-communicateSourceOfParam <- function(param) {
+communicate_source_of_param <- function(param) {
   if (is.null(attr(param, "local", exact = TRUE))) {
     source <- " (as provided)"
   } else {
