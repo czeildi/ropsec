@@ -115,24 +115,9 @@ gh_store_key <- function(key, .token = NULL) {
 }
 
 set_key_to_sign_commits <- function(key, global) {
-  new_git_user_email <- extract_email_for_key(key)
-  original_git_user_email <- extract_git_option("user.email", allow_global = global)
-  if (is.null(original_git_user_email)) {
-    original_git_user_email <- ""
-  }
-  confirmation_message <- paste0(
-    "Do you want to sign all future commits with `", key, "` in ",
-    ifelse(global, "all repositories?", "this repository?"), "\n",
-    ifelse(
-      original_git_user_email != new_git_user_email,
-      paste0(
-        "This will also set your user.email from ",
-        original_git_user_email, " to ", new_git_user_email, ".\n"
-      ),
-      ""
-    )
-  )
+  confirmation_message <- assemble_confirmation_message(key, global)
   if (require_confirmation_from_user(confirmation_message)) {
+    new_git_user_email <- extract_email_for_key(key)
     git2r::config(
       global = global,
       user.signingkey = key,
@@ -243,3 +228,22 @@ require_confirmation_from_user <- function(message) {
   ret[utils::menu(qs[rand])]
 }
 
+assemble_confirmation_message <- function(key, global) {
+  new_git_user_email <- extract_email_for_key(key)
+  original_git_user_email <- extract_git_option("user.email", allow_global = global)
+  if (is.null(original_git_user_email)) {
+    original_git_user_email <- ""
+  }
+  paste0(
+    "Do you want to sign all future commits with `", key, "` in ",
+    ifelse(global, "all repositories?", "this repository?"), "\n",
+    ifelse(
+      original_git_user_email != new_git_user_email,
+      paste0(
+        "This will also set your user.email from ",
+        original_git_user_email, " to ", new_git_user_email, ".\n"
+      ),
+      ""
+    )
+  )
+}
