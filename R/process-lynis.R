@@ -1,5 +1,4 @@
 process_lynis_audit <- function(res) {
-
   suggestions <- res[grepl("^sugg", res)]
   warnings <- res[grepl("^warn", res)]
 
@@ -20,14 +19,14 @@ process_lynis_audit <- function(res) {
   class(warnings) <- c("tbl_df", "tbl", "data.frame")
 
   if (nrow(warnings) > 0) {
-    tmp <- utils::read.csv(text=paste0(warnings$V2, collapse="\n"), sep="|", stringsAsFactors=FALSE, header=FALSE)
+    tmp <- utils::read.csv(text = paste0(warnings$V2, collapse = "\n"), sep = "|", stringsAsFactors = FALSE, header = FALSE)
     warnings <- tmp$V2
   } else {
     warnings <- c()
   }
 
   if (nrow(suggestions) > 0) {
-    tmp <- utils::read.csv(text=paste0(suggestions$V2, collapse="\n"), sep="|", stringsAsFactors=FALSE, header=FALSE)
+    tmp <- utils::read.csv(text = paste0(suggestions$V2, collapse = "\n"), sep = "|", stringsAsFactors = FALSE, header = FALSE)
     suggestions <- tmp$V2
   } else {
     suggestions <- c()
@@ -42,7 +41,6 @@ process_lynis_audit <- function(res) {
   class(out) <- c("lynis_obj", "list")
 
   out
-
 }
 
 #' Print lynis audit results
@@ -53,11 +51,10 @@ process_lynis_audit <- function(res) {
 #' @export
 #' @keywords internal
 print.lynis_obj <- function(x, ...) {
-
-  cat("System audit results:\n\n", sep="")
+  cat("System audit results:\n\n", sep = "")
 
   if (length(x$warnings) > 0) {
-    cat("Warnings:\n", sprintf("  - %s\n", x$warnings), "\n", sep="")
+    cat("Warnings:\n", sprintf("  - %s\n", x$warnings), "\n", sep = "")
   } else {
     cat("No warnings.\n")
   }
@@ -65,7 +62,7 @@ print.lynis_obj <- function(x, ...) {
   cat("\n")
 
   if (length(x$suggestions) > 0) {
-    cat("Suggestions:\n", sprintf("  - %s\n", x$suggestions), "\n", sep="")
+    cat("Suggestions:\n", sprintf("  - %s\n", x$suggestions), "\n", sep = "")
   } else {
     cat("No suggestions\n")
   }
@@ -73,5 +70,4 @@ print.lynis_obj <- function(x, ...) {
   cat("\n")
 
   print(x$audit_results)
-
 }

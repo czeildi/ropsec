@@ -168,4 +168,3 @@ stopDueToMultipleKeys <- function(key_candidates) {
     call. = FALSE
   )
 }
-
