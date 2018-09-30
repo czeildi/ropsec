@@ -1,0 +1,113 @@
+---
+title: "Sign commits (GPG)"
+author: "Ildiko Czeller"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sign commits (GPG)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(ropsec)
+```
+
+[Installation instructions](https://github.com/jeroen/gpg)
+
+[General info on GPG](https://cran.r-project.org/web/packages/gpg/vignettes/intro.html)
+
+## Default use-case
+
+Run this function once to generate a new key and set it to sign all future commits in all repositories.
+
+```{r eval=FALSE}
+sign_commits_with_key(name = "John Doe", email = "johndoe@example.com")
+```
+
+```{r echo = FALSE}
+message("`John Doe` (as provided) and
+`johndoe@example.com` (as provided)
+will be used to generate a new gpg key.")
+cat("Please enter password for new gpg key (can be blank): ********\n")
+cat("Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
+
+1: Yes
+2: Not now
+3: Absolutely not
+Selection: 1")
+"ABCDEFGHIJKLMNOP"
+```
+
+
+
+## Existing key
+
+### provide key id
+
+```{r eval=FALSE}
+sign_commits_with_key(key = "ABCDEFGHIJKLMNOP")
+```
+
+```{r echo = FALSE}
+message("Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
+
+1: Absolutely not
+2: Not now
+3: Yes
+
+Selection: 1")
+"ABCDEFGHIJKLMNOP"
+```
+
+### find based on user name and/or email
+
+```{r eval=FALSE}
+sign_commits_with_key(name = "John Doe")
+```
+
+```{r echo=FALSE}
+message("Existing key found: ABCDEFGHIJKLMNOP.
+Corresponding email: johndoe@example.com (based on local git config).
+
+Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
+
+1: Yes
+2: Absolutely not
+3: Not now
+
+Selection: 1")
+"ABCDEFGHIJKLMNOP"
+```
+
+```{r eval=FALSE}
+sign_commits_with_key(email = "johndoe@example.com")
+```
+
+```{r echo=FALSE}
+message("Existing key found: ABCDEFGHIJKLMNOP.
+Corresponding email: johndoe@example.com (as provided).
+
+Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
+
+1: Yes
+2: Not now
+3: Absolutely not
+
+Selection: 1")
+"ABCDEFGHIJKLMNOP"
+```
+
+
+## Use different keys in different repositories.
+
+One common use-case is to have a personal and a work email as well and you use git with both of them. At the first time you want to use them, generate a key and set to use it in the repository.
+
+Later, for convenience the appropriate key can be identified based on email as well or if the local git config is set you can even rely on that.
