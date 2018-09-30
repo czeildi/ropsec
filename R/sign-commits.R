@@ -2,7 +2,8 @@
 #'
 #' Configure git to sign all commits using GPG. If no existing key is provided
 #' or found, `sign_commits_with_key()` will create a new key and use it for
-#' signing.
+#' signing. This function is suitable only for interactive use, before changing
+#' the user's git config it will always ask for confirmation.
 #'
 #' In case of already existing key(s) for convenience an appropriate key will be
 #' identified based on the provided name and/or email, or git config. This is
@@ -114,13 +115,33 @@ gh_store_key <- function(key, .token = NULL) {
 }
 
 set_key_to_sign_commits <- function(key, global) {
-  git2r::config(
-    global = global,
-    user.signingkey = key,
-    commit.gpgsign = "true",
-    user.email = extract_email_for_key(key)
+  original_git_user_email <- extract_git_option("user.email", allow_global = global)
+  if (is.null(original_git_user_email)) {
+    original_git_user_email <- ""
+  }
+  new_git_user_email <- extract_email_for_key(key)
+  confirmation_message <- paste0(
+    "Do you want to sign all future commits with `", key, "` in ",
+    ifelse(global, "all repositories?", "this repository?"), "\n",
+    ifelse(
+      original_git_user_email != new_git_user_email,
+      paste0(
+        "This will also set your user.email from ",
+        original_git_user_email, " to ", new_git_user_email, ".\n"
+      ),
+      ""
+    )
   )
-  return(key)
+  if (require_confirmation_from_user(confirmation_message)) {
+    git2r::config(
+      global = global,
+      user.signingkey = key,
+      commit.gpgsign = "true",
+      user.email = new_git_user_email
+    )
+    return(key)
+  }
+  invisible(NULL)
 }
 
 extract_email_for_key <- function(key) {
@@ -128,16 +149,18 @@ extract_email_for_key <- function(key) {
   subset(keys, keys$id == key)$email
 }
 
-extract_git_option <- function(name) {
+extract_git_option <- function(name, allow_global = TRUE) {
   git_config <- git2r::config()
   if (!is.null(git_config[["local"]][[name]])) {
     value <- git_config[["local"]][[name]]
     attr(value, "local") <- TRUE
-  } else {
+  } else if (allow_global == TRUE) {
     value <- git_config[["global"]][[name]]
     if (!is.null(value)) {
       attr(value, "local") <- FALSE
     }
+  } else {
+    value <- NULL
   }
   value
 }
@@ -207,3 +230,16 @@ communicateSourceOfParam <- function(param) {
   }
   source
 }
+
+require_confirmation_from_user <- function(message) {
+  if (!interactive()) {
+    stop("User input required in non-interactive session.\n", call. = FALSE)
+  }
+  qs <- c("Yes", "Not now", "Absolutely not")
+  rand <- sample(length(qs))
+  ret <- rand == 1
+
+  cat(message)
+  ret[utils::menu(qs[rand])]
+}
+
