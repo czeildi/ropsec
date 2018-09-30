@@ -1,16 +1,16 @@
 #' GPG sign all git commits
 #'
-#' Configure git to sign all commits using GPG. If no existing key is provided,
-#' `sign_commits_with_key()` will create a new key and use it for signing.
+#' Configure git to sign all commits using GPG. If no existing key is provided
+#' or found, `sign_commits_with_key()` will create a new key and use it for
+#' signing.
 #'
 #' In case of already existing key(s) for convenience an appropriate key will be
-#' identified based on git config, or if git config is not set, it is sufficient
-#' to provide one of name or email. This is especially handy if you have
-#' multiple email addresses used with git and thus would like to set-up commit
-#' signing on a per-repo basis. In this case supply the email and set the global
-#' param to `FALSE`. If you accidentally set that all commits should be signed
-#' you can revert this by deleting the `commit.gpgsign` and `user.signingkey` git
-#' options.
+#' identified based on the provided name and/or email, or git config. This is
+#' especially handy if you have multiple email addresses used with git and thus
+#' would like to set-up commit signing on a per-repository basis. In this case
+#' supply the email and set the global param to `FALSE`. If you accidentally set
+#' that all commits should be signed you can revert this by deleting the
+#' `commit.gpgsign` and `user.signingkey` git options.
 #'
 #'
 #' @param name A character string containing your name. If not provided,
@@ -22,14 +22,25 @@
 #' @param key A character string containing the ID of a pre-existing key to use.
 #'   If `NULL` and key cannot be found based on name and email unambiguously, a
 #'   new key will be created.
-#' @param global boolean, set commit signing in global or local git config.
+#' @param global boolean, set commit signing in global or local (repository) git
+#'   config.
 #' @return A character string containing the ID of the key that was provided or
 #'   generated.
 #' @export
 #'
 #' @examples
 #' \dontrun{
+#' # generate key and use newly generated key
 #' newkey <- sign_commits_with_key("John Doe", "johndoe@example.com")
+#'
+#' # use existing key by explicitly providing it
+#' sign_commits_with_key(key = "test_key")
+#'
+#' # use existing key based on email match
+#' sign_commits_with_key(email = "johndoe@example.com")
+#'
+#' # set key to sign commits only in current repository
+#' sign_commits_with_key(key = "test_key", global = FALSE)
 #' }
 sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
   if (!is.null(key)) {
@@ -78,7 +89,7 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
 #'
 #' @param key A character string containing the ID of a key to use. See
 #'   [gpg::gpg_list_keys()]; if you haven't created a key, see
-#'   [gpg::gpg_keygen()].
+#'   [sign_commits_with_key()] or [gpg::gpg_keygen()].
 #' @param .token GitHub Personal Access Token.
 #' @export
 #'
@@ -145,7 +156,8 @@ filter_keys_on_name_and_email_if_provided <- function(keys, user_name, user_emai
 generate_key_with_name_and_email <- function(name, email) {
   if (is.null(name) | is.null(email)) {
     stop(
-      "Name and email are required to generate a gpg key and are not provided or available in the user's git config.",
+      "Name and email are required to generate a gpg key ",
+      "and are neither provided nor available in the user's git config.",
       call. = FALSE
     )
   }

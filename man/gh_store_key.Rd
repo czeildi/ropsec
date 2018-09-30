@@ -9,7 +9,7 @@ gh_store_key(key, .token = NULL)
 \arguments{
 \item{key}{A character string containing the ID of a key to use. See
 [gpg::gpg_list_keys()]; if you haven't created a key, see
-[gpg::gpg_keygen()].}
+[sign_commits_with_key()] or [gpg::gpg_keygen()].}
 
 \item{.token}{GitHub Personal Access Token.}
 }
