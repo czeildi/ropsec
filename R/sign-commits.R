@@ -43,6 +43,10 @@
 #' sign_commits_with_key(key = "test_key", global = FALSE)
 #' }
 sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
+  if (!is.null(key)) {
+    return(set_key_to_sign_commits(key, global))
+  }
+
   if (missing(name)) {
     name <- extract_git_option("user.name")
   }
@@ -50,35 +54,18 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
     email <- extract_git_option("user.email")
   }
 
-  if (!is.null(key)) {
-    git2r::config(
-      global = global,
-      user.signingkey = key,
-      commit.gpgsign = "true",
-      user.email = email
-    )
-    return(key)
-  }
-
   key_candidates <- get_key_candidates(name, email)
 
   if (nrow(key_candidates) == 0L) {
     key <- generate_key_with_name_and_email(name, email)
   } else if (nrow(key_candidates) == 1L) {
-    message("Existing key found and will be used to sign commits.")
     key <- key_candidates$id
+    message("Existing key found and will be used to sign commits.")
   } else {
     stopDueToMultipleKeys(key_candidates)
   }
 
-  git2r::config(
-    global = global,
-    user.signingkey = key,
-    commit.gpgsign = "true",
-    user.email = email
-  )
-
-  return(key)
+  set_key_to_sign_commits(key, global)
 }
 
 #' Add a public key to your GitHub account
@@ -123,12 +110,27 @@ gh_store_key <- function(key, .token = NULL) {
   }
 }
 
+set_key_to_sign_commits <- function(key, global) {
+  git2r::config(
+    global = global,
+    user.signingkey = key,
+    commit.gpgsign = "true",
+    user.email = extract_email_for_key(key)
+  )
+  return(key)
+}
+
+extract_email_for_key <- function(key) {
+  keys <- gpg::gpg_list_keys()
+  subset(keys, keys$id == key)$email
+}
+
 extract_git_option <- function(name) {
   git_config <- git2r::config()
-  if (is.null(git_config[["local"]][[name]])) {
-    git_config[["global"]][[name]]
-  } else {
+  if (!is.null(git_config[["local"]][[name]])) {
     git_config[["local"]][[name]]
+  } else {
+    git_config[["global"]][[name]]
   }
 }
 
@@ -141,20 +143,11 @@ get_key_candidates <- function(user_name, user_email) {
 
 filter_keys_on_name_and_email_if_provided <- function(keys, user_name, user_email) {
   if (is.null(user_name)) {
-    subset(
-      keys,
-      keys$email == user_email
-    )
+    subset(keys, keys$email == user_email)
   } else if (is.null(user_email)) {
-    subset(
-      keys,
-      keys$name == user_name
-    )
+    subset(keys, keys$name == user_name)
   } else {
-    subset(
-      keys,
-      keys$name == user_name & keys$email == user_email
-    )
+    subset(keys, keys$name == user_name & keys$email == user_email)
   }
 }
 

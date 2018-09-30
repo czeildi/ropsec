@@ -22,7 +22,8 @@ SystemRequirements: lynis (macOS/Linux);
 Encoding: UTF-8
 License: MIT + file LICENSE
 Suggests:
-    covr
+    covr,
+    mockery
 Depends:
     R (>= 3.2.0)
 Imports:
