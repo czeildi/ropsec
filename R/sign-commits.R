@@ -60,7 +60,10 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
     key <- generate_key_with_name_and_email(name, email)
   } else if (nrow(key_candidates) == 1L) {
     key <- key_candidates$id
-    message("Existing key found and will be used to sign commits.")
+    message(
+      "Existing key found: ", key, ".\n",
+      "Corresponding email: ", email, communicateSourceOfParam(email), ".\n"
+    )
   } else {
     stopDueToMultipleKeys(key_candidates)
   }
@@ -128,10 +131,15 @@ extract_email_for_key <- function(key) {
 extract_git_option <- function(name) {
   git_config <- git2r::config()
   if (!is.null(git_config[["local"]][[name]])) {
-    git_config[["local"]][[name]]
+    value <- git_config[["local"]][[name]]
+    attr(value, "local") <- TRUE
   } else {
-    git_config[["global"]][[name]]
+    value <- git_config[["global"]][[name]]
+    if (!is.null(value)) {
+      attr(value, "local") <- FALSE
+    }
   }
+  value
 }
 
 get_key_candidates <- function(user_name, user_email) {
@@ -159,6 +167,11 @@ generate_key_with_name_and_email <- function(name, email) {
       call. = FALSE
     )
   }
+  message(
+    "`", name, "`", communicateSourceOfParam(name), " and\n",
+    "`", email, "`", communicateSourceOfParam(email), "\n",
+    "will be used to generate a new gpg key."
+  )
   passphrase <- readline(
     prompt = "Please enter password for new gpg key (can be blank): "
   )
@@ -180,4 +193,17 @@ stopDueToMultipleKeys <- function(key_candidates) {
     "deleting the keys you do not want to use.",
     call. = FALSE
   )
+}
+
+communicateSourceOfParam <- function(param) {
+  if (is.null(attr(param, "local", exact = TRUE))) {
+    source <- " (as provided)"
+  } else {
+    if (attr(param, "local", exact = TRUE)) {
+      source <- " (based on local git config)"
+    } else {
+      source <- " (based on global git config)"
+    }
+  }
+  source
 }
