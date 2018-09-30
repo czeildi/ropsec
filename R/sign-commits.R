@@ -162,6 +162,9 @@ generate_key_with_name_and_email <- function(name, email) {
   passphrase <- readline(
     prompt = "Please enter password for new gpg key (can be blank): "
   )
+  if (passphrase == "") {
+    passphrase <- NULL
+  }
   gpg::gpg_keygen(
     name = name,
     email = email,

@@ -163,3 +163,14 @@ test_that("extract git option: not available", {
   mockery::stub(extract_git_option, "git2r::config", git_config_mock)
   expect_equal(extract_git_option("nonexistent_option"), NULL)
 })
+
+test_that("generate key: if no password, use NULL", {
+  mockery::stub(generate_key_with_name_and_email, "readline", "")
+  keygen_mock <- mockery::mock()
+  mockery::stub(generate_key_with_name_and_email, "gpg::gpg_keygen", keygen_mock)
+  generate_key_with_name_and_email("John Doe", "jd@example.com")
+  mockery::expect_args(
+    keygen_mock, 1,
+    name = "John Doe", email = "jd@example.com", passphrase = NULL
+  )
+})
