@@ -16,13 +16,21 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r}
-library(ropsec)
-```
+
+It is good practice to sign your commits so that your commits can be verified as certainly made by you and not by someone impersonating you.
+
+One technology to enable this is [GPG](https://gnupg.org/) for which and R interface is created by [Jeroen Ooms](https://github.com/jeroen). The current package provides helper functions and aim to ease the process as much as possible.
+
+First, make sure that dependencies are installed:
 
 [Installation instructions](https://github.com/jeroen/gpg)
 
-[General info on GPG](https://cran.r-project.org/web/packages/gpg/vignettes/intro.html)
+If you are interested in background, 
+[general info on GPG](https://cran.r-project.org/web/packages/gpg/vignettes/intro.html) is highly recommended.
+
+```{r}
+library(ropsec)
+```
 
 ## Default use-case
 
@@ -110,4 +118,49 @@ Selection: 1")
 
 One common use-case is to have a personal and a work email as well and you use git with both of them. At the first time you want to use them, generate a key and set to use it in the repository.
 
+In a personal git repository:
+
+```{r eval=FALSE}
+sign_commits_with_key(name = "John Doe", email = "jd@personal.com", global = FALSE)
+```
+
+In a work-related git repository:
+
+```{r eval=FALSE}
+sign_commits_with_key(name = "John Doe", email = "jd@company.com", global = FALSE)
+```
+
 Later, for convenience the appropriate key can be identified based on email as well or if the local git config is set you can even rely on that.
+
+In another work-related repository:
+
+```{r eval=FALSE}
+sign_commits_with_key(email = "jd@company.com", global = FALSE)
+```
+
+In yet another work-related repository:
+
+```{bash eval=FALSE}
+git config user.email jd@company.com
+```
+
+```{r eval=FALSE}
+sign_commits_with_key(global = FALSE)
+```
+
+```{r echo=FALSE}
+cat("Existing key found: 1234561234561234.
+Corresponding email: jd@company.com (based on local git config).
+
+Do you want to sign all future commits with `1234561234561234` in this repository?
+
+1: Yes
+2: Absolutely not
+3: Not now
+
+Selection: 1")
+"1234561234561234"
+```
+
+
+You may choose to set one of them globally which thus will be the default key to use in a repository where the repository level configs are not set to a different value.
