@@ -197,7 +197,7 @@ stop_due_to_multiple_keys <- function(key_candidates) {
   stop(
     paste0(utils::capture.output(key_candidates), collapse = "\n"),
     "There are multiple keys,\n",
-    "you must disambiguate with providing the key param or",
+    "you must disambiguate with providing the key param or ",
     "deleting the keys you do not want to use.",
     call. = FALSE
   )
