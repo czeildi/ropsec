@@ -18,12 +18,12 @@ knitr::opts_chunk$set(
 
 
 It is good practice to sign your commits so that your commits can be verified as certainly made by you and not by someone impersonating you.
-
-One technology to enable this is [GPG](https://gnupg.org/) for which and R interface is created by [Jeroen Ooms](https://github.com/jeroen). The current package provides helper functions and aim to ease the process as much as possible.
+One technology to enable this is GPG, which has an R wrapper written by Jeroen Ooms.
+One technology to enable this is [GPG](https://gnupg.org/), which has an [R wrapper](https://github.com/jeroen/gpg) written by [Jeroen Ooms](https://github.com/jeroen). The current package provides helper functions and aims to ease the process as much as possible.
 
 First, make sure that dependencies are installed:
 
-[Installation instructions](https://github.com/jeroen/gpg)
+[Installation instructions](https://github.com/jeroen/gpg#installation)
 
 If you are interested in background, 
 [general info on GPG](https://cran.r-project.org/web/packages/gpg/vignettes/intro.html) is highly recommended.
@@ -71,7 +71,7 @@ message("Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all r
 2: Not now
 3: Yes
 
-Selection: 1")
+Selection: 3")
 "ABCDEFGHIJKLMNOP"
 ```
 
