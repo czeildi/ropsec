@@ -58,7 +58,7 @@ full_audit_results <- full_on_audit()
 ### Sign commits
 
 ```{r eval = FALSE}
-key <- sign_commits_with_key("John Doe", "john.doe@gmail.com", "password")
+key <- sign_commits_with_key("John Doe", "john.doe@gmail.com")
 gh_store_key(key)
 ```
 

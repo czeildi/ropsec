@@ -1,13 +1,16 @@
+
 ![](./man/figures/Loose_lips_might_sink_ships.jpg)
 
-# rOpenSci Unconf 18 Project : ropsec
+rOpenSci Unconf 18 Project : ropsec
+===================================
 
-## Authors:
+Authors:
+--------
 
-- Ildiko Czeller
-- Karthik Ram
-- Bob Rudis
-- Kara Woo
+-   Ildiko Czeller
+-   Karthik Ram
+-   Bob Rudis
+-   Kara Woo
 
 ropsec
 ======
@@ -57,7 +60,7 @@ full_audit_results <- full_on_audit()
 ### Sign commits
 
 ``` r
-key <- sign_commits_with_key("John Doe", "john.doe@gmail.com", "password")
+key <- sign_commits_with_key("John Doe", "john.doe@gmail.com")
 gh_store_key(key)
 ```
 
