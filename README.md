@@ -4,6 +4,8 @@
 rOpenSci Unconf 18 Project : ropsec
 ===================================
 
+[![Travis build status](https://travis-ci.org/ropenscilabs/ropsec.svg?branch=master)](https://travis-ci.org/ropenscilabs/ropsec) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/ropenscilabs/ropsec?branch=master&svg=true)](https://ci.appveyor.com/project/ropenscilabs/ropsec)
+
 Authors:
 --------
 

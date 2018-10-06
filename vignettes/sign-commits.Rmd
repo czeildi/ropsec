@@ -25,6 +25,9 @@ First, make sure that dependencies are installed:
 
 [Installation instructions](https://github.com/jeroen/gpg#installation)
 
+- OSX: `brew install gnupg`
+- Linux: 
+
 If you are interested in background, 
 [general info on GPG](https://cran.r-project.org/web/packages/gpg/vignettes/intro.html) is highly recommended.
 
