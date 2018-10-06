@@ -11,7 +11,9 @@ gh_store_key(key, .token = NULL)
 [gpg::gpg_list_keys()]; if you haven't created a key, see
 [sign_commits_with_key()] or [gpg::gpg_keygen()].}
 
-\item{.token}{GitHub Personal Access Token.}
+\item{.token}{GitHub Personal Access Token with at least `write:gpg_key`
+scope enabled. You can grant access to tokens
+[here](https://github.com/settings/tokens).}
 }
 \description{
 `gh_store_key()` add the public key associated with a key ID to your GitHub
@@ -20,6 +22,10 @@ it; if it fails, it will print the public key for you to copy manually into
 GitHub.
 }
 \details{
+If you do not have a GitHub Personal Access Token setup or you want to store
+your key on Gitlab or other service you can either call this function without
+a token and then add the printed public key manually or call
+[gpg::gpg_export()] with `newkey` and add the returned public key manually.
 See
 https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
 for more information on tokens.
@@ -27,6 +33,9 @@ for more information on tokens.
 \examples{
 \dontrun{
 newkey <- sign_commits_with_key("John Doe", "johndoe@example.com")
+# if you do not have personal access token for github
 gh_store_key(newkey)
+# if your GitHub Personal Access Token is stored in `.Renviron` as GITHUB_PAT
+gh_store_key(newkey, Sys.getenv('GITHUB_PAT'))
 }
 }
