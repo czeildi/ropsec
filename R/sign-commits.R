@@ -116,10 +116,7 @@ gh_store_key <- function(key, .token = NULL) {
     )
     return(invisible(pubkey))
   }
-  gh_attempt <- try(
-    gh::gh("POST /user/gpg_keys", armored_public_key = pubkey, .token = .token),
-    silent = TRUE
-  )
+  gh_attempt <- gh_attempt_key_upload(pubkey, .token)
 
   if (inherits(gh_attempt, "try-error")) {
     if (inherits(attr(gh_attempt, "condition"), "http_error_422")) {
@@ -144,6 +141,13 @@ gh_store_key <- function(key, .token = NULL) {
     )
   }
   invisible(pubkey)
+}
+
+gh_attempt_key_upload <- function(pubkey, .token) {
+  try(
+    gh::gh("POST /user/gpg_keys", armored_public_key = pubkey, .token = .token),
+    silent = TRUE
+  )
 }
 
 set_key_to_sign_commits <- function(key, global) {

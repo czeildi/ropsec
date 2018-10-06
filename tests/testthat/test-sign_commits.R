@@ -238,3 +238,58 @@ test_that("generate key: message based on source of param", {
     ".*\\(based on local git config\\).*\\(based on global git config\\)"
   )
 })
+
+test_that("error is thrown if email is neither provided nor available in git config", {
+  mockery::stub(sign_commits_with_key, "extract_git_option", NULL)
+  mockery::stub(sign_commits_with_key, "get_key_candidates", data.frame())
+  expect_error(
+    sign_commits_with_key(global = FALSE),
+    "Name and email are required"
+  )
+})
+
+context("gh store key")
+
+test_that("if token is not provided, public key returned with message", {
+  mockery::stub(gh_store_key, "gpg::gpg_export", "public_key_block")
+  expect_message(
+    gh_store_key("ABCD"),
+    "Could not add.*public_key_block"
+  )
+})
+
+test_that("if key already exists, appropriate message is returned", {
+  mockery::stub(gh_store_key, "gpg::gpg_export", "public_key_block")
+  gh_error <- ""
+  class(gh_error) <- "try-error"
+  gh_condition <- ""
+  class(gh_condition) <- "http_error_422"
+  attr(gh_error, "condition") <- gh_condition
+  mockery::stub(gh_store_key, "gh_attempt_key_upload", gh_error)
+  expect_message(
+    gh_store_key("ABCD", "mytoken"),
+    "Public GPG key is already stored on GitHub."
+  )
+})
+
+test_that("if other error from github, communicate unsuccessful upload", {
+  mockery::stub(gh_store_key, "gpg::gpg_export", "public_key_block")
+  gh_error <- ""
+  class(gh_error) <- "try-error"
+  attr(gh_error, "condition") <- ""
+  mockery::stub(gh_store_key, "gh_attempt_key_upload", gh_error)
+  expect_message(
+    gh_store_key("ABCD", "mytoken"),
+    "Could not add.*public_key_block"
+  )
+})
+
+test_that("if upload is successful but key is unverified, communicate it", {
+  mockery::stub(gh_store_key, "gpg::gpg_export", "public_key_block")
+  gh_answer <- list("emails" = list(list("verified" = FALSE)))
+  mockery::stub(gh_store_key, "gh_attempt_key_upload", gh_answer)
+  expect_warning(
+    gh_store_key("ABCD", "mytoken"),
+    "Uploaded key in unverified."
+  )
+})
