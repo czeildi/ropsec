@@ -6,21 +6,7 @@ rOpenSci Unconf 18 Project : ropsec
 
 [![Travis build status](https://travis-ci.org/ropenscilabs/ropsec.svg?branch=master)](https://travis-ci.org/ropenscilabs/ropsec) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/55vx8b5jckpa216a?svg=true)](https://ci.appveyor.com/project/czeildi/ropsec-w5fnj) [![Coverage status](https://codecov.io/gh/ropenscilabs/ropsec/branch/master/graph/badge.svg)](https://codecov.io/github/ropenscilabs/ropsec?branch=master)
 
-Authors:
---------
-
--   Ildiko Czeller
--   Karthik Ram
--   Bob Rudis
--   Kara Woo
-
-ropsec
-======
-
 Personal Workstation Safety Checks and Utilities
-
-Description
------------
 
 What's Inside The Tin
 ---------------------
@@ -60,6 +46,8 @@ full_audit_results <- full_on_audit()
 ```
 
 ### Sign commits
+
+For details see `vignette("sign-commits", "ropsec")`
 
 ``` r
 key <- sign_commits_with_key("John Doe", "john.doe@gmail.com")

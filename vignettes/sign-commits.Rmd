@@ -42,10 +42,6 @@ git config --global gpg.program gpg2
 If you are interested in background, 
 [general info on GPG](https://cran.r-project.org/web/packages/gpg/vignettes/intro.html) is highly recommended.
 
-```{r}
-library(ropsec)
-```
-
 # Sign commits {#sign_commits}
 
 ## Default use-case

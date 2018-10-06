@@ -74,7 +74,7 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
 
 #' Add a public key to your GitHub account
 #'
-#' `gh_store_key()` add the public key associated with a key ID to your GitHub
+#' `gh_store_key()` adds the public key associated with a key ID to your GitHub
 #' account. If you have a GitHub Personal Access Token it will attempt to use
 #' it; if it fails, it will print the public key for you to copy manually into
 #' GitHub.

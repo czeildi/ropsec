@@ -8,10 +8,6 @@
 #' @md
 #' @name ropsec
 #' @docType package
-#' @author Ildiko Czeller (czeildi@@gmail.com)
-#' @author Karthik Ram (karthik.ram@@gmail.com)
-#' @author Bob Rudis (bob@@rud.is)
-#' @author Kara Woo
 #' @import testthat sys stringi openssl gpg
 #' @importFrom stats setNames
 #' @importFrom utils read.csv

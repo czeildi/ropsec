@@ -11,12 +11,3 @@ safety. Methods are provided to run "ropsec" checks on your system to ensure
 your computing environment is as safe as possible from the perspectives of
 confidentiality and integrity.
 }
-\author{
-Ildiko Czeller (czeildi@gmail.com)
-
-Karthik Ram (karthik.ram@gmail.com)
-
-Bob Rudis (bob@rud.is)
-
-Kara Woo
-}
