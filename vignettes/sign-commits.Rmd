@@ -18,8 +18,13 @@ knitr::opts_chunk$set(
 
 
 It is good practice to sign your commits so that your commits can be verified as certainly made by you and not by someone impersonating you.
-One technology to enable this is GPG, which has an R wrapper written by Jeroen Ooms.
+
 One technology to enable this is [GPG](https://gnupg.org/), which has an [R wrapper](https://github.com/jeroen/gpg) written by [Jeroen Ooms](https://github.com/jeroen). The current package provides helper functions and aims to ease the process as much as possible.
+
+Having verified commits has two components:
+
+- [sign your commits](#sign_commits) (with private key)
+- [upload your public key](#upload_key) to GitHub, Gitlab, etc so that they can verify your commits (with public key)
 
 First, make sure that dependencies are installed:
 
@@ -34,6 +39,8 @@ If you are interested in background,
 ```{r}
 library(ropsec)
 ```
+
+# Sign commits {#sign_commits}
 
 ## Default use-case
 
@@ -167,3 +174,15 @@ Selection: 1")
 
 
 You may choose to set one of them globally which thus will be the default key to use in a repository where the repository level configs are not set to a different value.
+
+# Upload your public key to repository management services {#upload_key}
+
+To upload to GitHub without leaving your R session you need the following:
+
+- a personal access token with at least `write:gpg_key` scope enabled. You can grant access to tokens [here](https://github.com/settings/tokens).
+- `gh_store_key(key, token)`
+
+You can use any service (GitHub, Gitlab etc) which supports GPG by manually adding your **public** GPG key which you can get by
+
+- `gh_store_key(new_key)` or
+- `gpg::gpg_export(new_key)`
