@@ -84,7 +84,7 @@ test_that("if one existing key found, it is communicated in message", {
   )
   expect_message(
     sign_commits_with_key(email = "jd@example.com"),
-    "Existing key found: test_id.\nCorresponding email: jd@example.com"
+    "Existing key found: `test_id`.\nCorresponding email: `jd@example.com`"
   )
 })
 
@@ -119,7 +119,7 @@ test_that("assemble_confirmation_message: ask for confirmation with meaningful m
       "Do you want to sign all future commits with `test_id` ",
       "in this repository?\n",
       "This will also set your user.email ",
-      "from jd2@company.com to jd@example.com.\n"
+      "from `jd2@company.com` to `jd@example.com`.\n"
     )
   )
 })

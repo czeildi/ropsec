@@ -62,8 +62,8 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
   } else if (nrow(key_candidates) == 1L) {
     key <- key_candidates$id
     message(
-      "Existing key found: ", key, ".\n",
-      "Corresponding email: ", email, communicate_source_of_param(email), ".\n"
+      "Existing key found: `", key, "`.\n",
+      "Corresponding email: `", email, "`", communicate_source_of_param(email), ".\n"
     )
   } else {
     stop_due_to_multiple_keys(key_candidates)
@@ -240,8 +240,8 @@ assemble_confirmation_message <- function(key, global) {
     ifelse(
       original_git_user_email != new_git_user_email,
       paste0(
-        "This will also set your user.email from ",
-        original_git_user_email, " to ", new_git_user_email, ".\n"
+        "This will also set your user.email from `",
+        original_git_user_email, "` to `", new_git_user_email, "`.\n"
       ),
       ""
     )
