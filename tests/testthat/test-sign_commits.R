@@ -248,6 +248,18 @@ test_that("error is thrown if email is neither provided nor available in git con
   )
 })
 
+test_that("gpg program is set at first time", {
+  mockery::stub(set_key_to_sign_commits, "assemble_confirmation_message", "")
+  mockery::stub(set_key_to_sign_commits, "require_confirmation_from_user", FALSE)
+  mockery::stub(set_key_to_sign_commits, "extract_git_option", NULL)
+  git_config_mock <- mockery::mock()
+  mockery::stub(set_key_to_sign_commits, "git2r::config", git_config_mock)
+  set_key_to_sign_commits("ABCD", global = FALSE)
+  mockery::expect_args(
+    git_config_mock, 1, global = TRUE, gpg.program = "gpg"
+  )
+})
+
 context("gh store key")
 
 test_that("if token is not provided, public key returned with message", {

@@ -151,6 +151,11 @@ gh_attempt_key_upload <- function(pubkey, .token) {
 }
 
 set_key_to_sign_commits <- function(key, global) {
+  if (is.null(extract_git_option("gpg.program"))) {
+    git2r::config(
+      global = TRUE, gpg.program = "gpg"
+    )
+  }
   confirmation_message <- assemble_confirmation_message(key, global)
   if (require_confirmation_from_user(confirmation_message)) {
     new_git_user_email <- extract_email_for_key(key)
