@@ -89,6 +89,7 @@ test_that("if one existing key found, it is communicated in message", {
 })
 
 test_that("set_key_to_sign_commits: if user did not confirm, git2r config not called and NULL returned", {
+  mockery::stub(set_key_to_sign_commits, "extract_git_option", "gpg")
   mockery::stub(set_key_to_sign_commits, "require_confirmation_from_user", FALSE)
   git_config_mock <- mockery::mock()
   mockery::stub(set_key_to_sign_commits, "git2r::config", git_config_mock)
@@ -97,6 +98,7 @@ test_that("set_key_to_sign_commits: if user did not confirm, git2r config not ca
 })
 
 test_that("set_key_to_sign_commits: if user did confirm, git2r config is called with appropriate params and key returned", {
+  mockery::stub(set_key_to_sign_commits, "extract_git_option", "gpg")
   mockery::stub(set_key_to_sign_commits, "require_confirmation_from_user", TRUE)
   mockery::stub(set_key_to_sign_commits, "extract_email_for_key", "jd@example.com")
   git_config_mock <- mockery::mock()
