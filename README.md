@@ -13,10 +13,10 @@ What's Inside The Tin
 
 The following functions are implemented:
 
--   `full_on_audit()`
--   `sign_commits_with_key()`
--   `gh_store_key()`
--   `summarize_system_checks()`
+-   `sign_commits_with_key()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
+-   `gh_store_key()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
+-   `summarize_system_checks()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
+-   `full_on_audit()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
 
 Installation
 ------------
@@ -36,14 +36,6 @@ packageVersion("ropsec")
 ```
 
     ## [1] '0.1.0'
-
-### Audit
-
-E.g. what ports are used.
-
-``` r
-full_audit_results <- full_on_audit()
-```
 
 ### Sign commits
 
@@ -70,6 +62,14 @@ ropsec::summarize_system_checks()
     ✔ |  1       | macOS requires password after sleep or screen saver kicks in [0.1 s]
     ✖ |  0 1     | Firewall is enabled
     # ...
+
+### Audit
+
+E.g. what ports are used.
+
+``` r
+full_audit_results <- full_on_audit()
+```
 
 Collaborators
 -------------
