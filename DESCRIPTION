@@ -24,7 +24,8 @@ Suggests:
     covr,
     mockery,
     knitr,
-    rmarkdown
+    rmarkdown,
+    pkgdown
 Depends:
     R (>= 3.2.0)
 Imports:
