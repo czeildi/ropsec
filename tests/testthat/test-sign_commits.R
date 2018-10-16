@@ -208,8 +208,24 @@ test_that("extract git option: not available", {
   expect_equal(extract_git_option("nonexistent_option"), NULL)
 })
 
+test_that("safe getPass is called to retrieve password", {
+  getPassMock <- mockery::mock("")
+  mockery::stub(generate_key_with_name_and_email, "getPass::getPass", getPassMock)
+  mockery::stub(generate_key_with_name_and_email, "gpg::gpg_keygen", "")
+  generate_key_with_name_and_email("John Doe", "jd@example.com")
+  mockery::expect_called(getPassMock, 1)
+})
+
+test_that("throw error if gpg password prompt cancelled", {
+  mockery::stub(generate_key_with_name_and_email, "getPass::getPass", NULL)
+  expect_error(
+    generate_key_with_name_and_email("John Doe", "jd@example.com"),
+    "GPG key generation cancelled by user"
+  )
+})
+
 test_that("generate key: if no password, use NULL", {
-  mockery::stub(generate_key_with_name_and_email, "readline", "")
+  mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
   keygen_mock <- mockery::mock()
   mockery::stub(generate_key_with_name_and_email, "gpg::gpg_keygen", keygen_mock)
   generate_key_with_name_and_email("John Doe", "jd@example.com")
@@ -220,7 +236,7 @@ test_that("generate key: if no password, use NULL", {
 })
 
 test_that("generate key: message used name and email", {
-  mockery::stub(generate_key_with_name_and_email, "readline", "")
+  mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
   mockery::stub(generate_key_with_name_and_email, "gpg::gpg_keygen", NULL)
   expect_message(
     generate_key_with_name_and_email("John Doe", "jd@example.com"),
@@ -229,7 +245,7 @@ test_that("generate key: message used name and email", {
 })
 
 test_that("generate key: message based on source of param", {
-  mockery::stub(generate_key_with_name_and_email, "readline", "")
+  mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
   mockery::stub(generate_key_with_name_and_email, "gpg::gpg_keygen", NULL)
   name <- "John Doe"
   attr(name, "local") <- TRUE
