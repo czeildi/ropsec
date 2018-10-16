@@ -36,7 +36,8 @@ Imports:
     stats,
     utils,
     openssl,
-    sys
+    sys,
+    getPass
 RoxygenNote: 6.1.0
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
