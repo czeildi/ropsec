@@ -13,16 +13,22 @@ What's Inside The Tin
 
 The following functions are implemented:
 
--   `sign_commits_with_key()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
--   `gh_store_key()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
--   `summarize_system_checks()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
--   `full_on_audit()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
+-   [`sign_commits_with_key()`](#sign_commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
+-   [`gh_store_key()`](#sign_commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
+-   [`summarize_system_checks()`](#system_checks) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
+-   [`full_on_audit()`](#full_on_audit) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
 
 Installation
 ------------
 
 ``` r
 devtools::install_github("ropenscilabs/ropsec")
+```
+
+To have vignettes available locally:
+
+``` r
+devtools::install_github("ropenscilabs/ropsec", build_vignettes = TRUE)
 ```
 
 Usage

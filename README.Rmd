@@ -15,16 +15,23 @@ Personal Workstation Safety Checks and Utilities
 
 The following functions are implemented:
 
-- `sign_commits_with_key()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
-- `gh_store_key()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
-- `summarize_system_checks()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
-- `full_on_audit()` [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
+- [`sign_commits_with_key()`](#sign_commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
+- [`gh_store_key()`](#sign_commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
+- [`summarize_system_checks()`](#system_checks) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
+- [`full_on_audit()`](#full_on_audit) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
 
 ## Installation
 
 ```{r eval=FALSE}
 devtools::install_github("ropenscilabs/ropsec")
 ```
+
+To have vignettes available locally:
+
+```{r eval=FALSE}
+devtools::install_github("ropenscilabs/ropsec", build_vignettes = TRUE)
+```
+
 
 ```{r message=FALSE, warning=FALSE, error=FALSE, include=FALSE}
 options(width=120)
@@ -40,7 +47,7 @@ packageVersion("ropsec")
 
 ```
 
-### Sign commits
+### Sign commits {#sign_commits}
 
 For details see `vignette("sign-commits", "ropsec")`
 
@@ -51,7 +58,7 @@ gh_store_key(key)
 
 <img src="man/figures/signed_commit.png" align="center"/>
 
-### Lightweight system checks
+### Lightweight system checks {#system_checks}
 
 ```{r eval=FALSE}
 ropsec::summarize_system_checks()
@@ -68,7 +75,7 @@ ropsec::summarize_system_checks()
 # ...
 ```
 
-### Audit
+### Audit {#full_on_audit}
 
 E.g. what ports are used.
 
