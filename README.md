@@ -41,7 +41,7 @@ library(ropsec)
 packageVersion("ropsec")
 ```
 
-    ## [1] '0.1.0'
+    ## [1] '0.2.0'
 
 ### Sign commits
 
