@@ -82,7 +82,7 @@
       <h1>Sign commits (GPG)</h1>
                         <h4 class="author">Ildiko Czeller</h4>
             
-            <h4 class="date">2018-10-16</h4>
+            <h4 class="date">2018-10-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ropenscilabs/ropsec/blob/master/vignettes/sign-commits.Rmd"><code>vignettes/sign-commits.Rmd</code></a></small>
       <div class="hidden name"><code>sign-commits.Rmd</code></div>
@@ -91,38 +91,54 @@
 
     
     
+<div id="background" class="section level1">
+<h1 class="hasAnchor">
+<a href="#background" class="anchor"></a>Background</h1>
 <p>It is good practice to sign your commits so that your commits can be verified as certainly made by you and not by someone impersonating you.</p>
+<p><img src="../man/figures/signed_commit.png" align="center"></p>
 <p>One technology to enable this is <a href="https://gnupg.org/">GPG</a>, which has an <a href="https://github.com/jeroen/gpg">R wrapper</a> written by <a href="https://github.com/jeroen">Jeroen Ooms</a>. The current package provides helper functions and aims to ease the process as much as possible.</p>
 <p>Having verified commits has two components:</p>
 <ul>
 <li>
-<a href="#sign_commits">sign your commits</a> (with private key)</li>
+<a href="#sign_commits">sign your commits</a> (with private key),</li>
 <li>
-<a href="#upload_key">upload your public key</a> to GitHub, Gitlab, etc so that they can verify your commits (with public key)</li>
+<a href="#upload_key">upload your public key</a> to GitHub, Gitlab, etc so that they can verify your commits (with public key).</li>
 </ul>
-<p>First, make sure that dependencies are installed:</p>
-<p><a href="https://github.com/jeroen/gpg#installation">Installation instructions</a></p>
+<p>If you are interested in the background, <a href="https://cran.r-project.org/web/packages/gpg/vignettes/intro.html">general info on GPG</a> is highly recommended.</p>
+</div>
+<div id="how-to-sign-commits" class="section level1">
+<h1 class="hasAnchor">
+<a href="#how-to-sign-commits" class="anchor"></a>How to sign commits</h1>
+<ol style="list-style-type: decimal">
+<li>Install system dependencies (<a href="https://github.com/jeroen/gpg#installation">GPG Installation instructions</a>)
 <ul>
-<li>OSX: if not installed already (check with <code>gpg --version</code>), <code>brew install gnupg</code>
-</li>
-<li>Linux: if not installed already (check with <code>gpg --version</code>), <code>apt-get install gnupg</code>
-</li>
+<li>OSX: <code>brew install gnupg</code> (check if installed with <code>gpg --version</code>)</li>
+<li>Linux: <code>apt-get install gnupg</code> (check if installed with <code>gpg --version</code>)</li>
 </ul>
-<p>If you use other gpg program, for example gnupg2 on Linux, you have to run the following first:</p>
-<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">git</span> config --global gpg.program gpg2</code></pre></div>
-<p>If you are interested in background, <a href="https://cran.r-project.org/web/packages/gpg/vignettes/intro.html">general info on GPG</a> is highly recommended.</p>
+</li>
+<li>install ropsec: <code><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">devtools::install_github("ropenscilabs/ropsec")</a></code>
+</li>
+<li>generate key and set it to sign commits
+<ul>
+<li><a href="#single">one email used with git</a></li>
+<li><a href="#multiple">multiple emails used with git</a></li>
+</ul>
+</li>
+<li><a href="#upload_key">upload key to GitHub/Gitlab/etc</a></li>
+</ol>
+</div>
 <div id="sign_commits" class="section level1">
 <h1 class="hasAnchor">
 <a href="#sign_commits" class="anchor"></a>Sign commits</h1>
-<div id="default-use-case" class="section level2">
+<div id="single" class="section level2">
 <h2 class="hasAnchor">
-<a href="#default-use-case" class="anchor"></a>Default use-case</h2>
-<p>Run this function once to generate a new key and set it to sign all future commits in all repositories.</p>
+<a href="#single" class="anchor"></a>Single email address, first-time usage</h2>
+<p>Run the following command once in any working directory to generate a new key and set it to sign all future commits in all repositories.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sign_commits_with_key.html">sign_commits_with_key</a></span>(<span class="dt">name =</span> <span class="st">"John Doe"</span>, <span class="dt">email =</span> <span class="st">"johndoe@example.com"</span>)</code></pre></div>
 <pre><code>#&gt; `John Doe` (as provided) and
 #&gt; `johndoe@example.com` (as provided)
 #&gt; will be used to generate a new gpg key.
-#&gt; Please enter password for new gpg key (can be blank): ********
+#&gt; Please enter password for new gpg key: ********
 #&gt; Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
 #&gt; 
 #&gt; 1: Yes
@@ -130,60 +146,20 @@
 #&gt; 3: Absolutely not
 #&gt; Selection: 1
 #&gt; [1] "ABCDEFGHIJKLMNOP"</code></pre>
+<p>Next step: <a href="#upload_key">upload your public key</a> to GitHub/Gitlab/etc.</p>
 </div>
-<div id="existing-key" class="section level2">
+<div id="multiple" class="section level2">
 <h2 class="hasAnchor">
-<a href="#existing-key" class="anchor"></a>Existing key</h2>
-<div id="provide-key-id" class="section level3">
-<h3 class="hasAnchor">
-<a href="#provide-key-id" class="anchor"></a>provide key id</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sign_commits_with_key.html">sign_commits_with_key</a></span>(<span class="dt">key =</span> <span class="st">"ABCDEFGHIJKLMNOP"</span>)</code></pre></div>
-<pre><code>#&gt; Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
-#&gt; 
-#&gt; 1: Absolutely not
-#&gt; 2: Not now
-#&gt; 3: Yes
-#&gt; 
-#&gt; Selection: 3
-#&gt; [1] "ABCDEFGHIJKLMNOP"</code></pre>
-</div>
-<div id="find-based-on-user-name-andor-email" class="section level3">
-<h3 class="hasAnchor">
-<a href="#find-based-on-user-name-andor-email" class="anchor"></a>find based on user name and/or email</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sign_commits_with_key.html">sign_commits_with_key</a></span>(<span class="dt">name =</span> <span class="st">"John Doe"</span>)</code></pre></div>
-<pre><code>#&gt; Existing key found: ABCDEFGHIJKLMNOP.
-#&gt; Corresponding email: johndoe@example.com (based on local git config).
-#&gt; 
-#&gt; Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
-#&gt; 
-#&gt; 1: Yes
-#&gt; 2: Absolutely not
-#&gt; 3: Not now
-#&gt; 
-#&gt; Selection: 1
-#&gt; [1] "ABCDEFGHIJKLMNOP"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sign_commits_with_key.html">sign_commits_with_key</a></span>(<span class="dt">email =</span> <span class="st">"johndoe@example.com"</span>)</code></pre></div>
-<pre><code>#&gt; Existing key found: ABCDEFGHIJKLMNOP.
-#&gt; Corresponding email: johndoe@example.com (as provided).
-#&gt; 
-#&gt; Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
-#&gt; 
-#&gt; 1: Yes
-#&gt; 2: Not now
-#&gt; 3: Absolutely not
-#&gt; 
-#&gt; Selection: 1
-#&gt; [1] "ABCDEFGHIJKLMNOP"</code></pre>
-</div>
-</div>
-<div id="use-different-keys-in-different-repositories-" class="section level2">
-<h2 class="hasAnchor">
-<a href="#use-different-keys-in-different-repositories-" class="anchor"></a>Use different keys in different repositories.</h2>
+<a href="#multiple" class="anchor"></a>Multiple email addresses, first-time usage</h2>
 <p>One common use-case is to have a personal and a work email as well and you use git with both of them. At the first time you want to use them, generate a key and set to use it in the repository.</p>
-<p>In a personal git repository:</p>
+<p>Run the following in a personal git repository:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sign_commits_with_key.html">sign_commits_with_key</a></span>(<span class="dt">name =</span> <span class="st">"John Doe"</span>, <span class="dt">email =</span> <span class="st">"jd@personal.com"</span>, <span class="dt">global =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p>In a work-related git repository:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sign_commits_with_key.html">sign_commits_with_key</a></span>(<span class="dt">name =</span> <span class="st">"John Doe"</span>, <span class="dt">email =</span> <span class="st">"jd@company.com"</span>, <span class="dt">global =</span> <span class="ot">FALSE</span>)</code></pre></div>
+</div>
+<div id="multiple-email-addresses-existing-key" class="section level2">
+<h2 class="hasAnchor">
+<a href="#multiple-email-addresses-existing-key" class="anchor"></a>Multiple email addresses, existing key</h2>
 <p>Later, for convenience the appropriate key can be identified based on email as well or if the local git config is set you can even rely on that.</p>
 <p>In another work-related repository:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sign_commits_with_key.html">sign_commits_with_key</a></span>(<span class="dt">email =</span> <span class="st">"jd@company.com"</span>, <span class="dt">global =</span> <span class="ot">FALSE</span>)</code></pre></div>
@@ -203,6 +179,27 @@
 #&gt; [1] "1234561234561234"</code></pre>
 <p>You may choose to set one of them globally which thus will be the default key to use in a repository where the repository level configs are not set to a different value.</p>
 </div>
+<div id="single-email-address-existing-key" class="section level2">
+<h2 class="hasAnchor">
+<a href="#single-email-address-existing-key" class="anchor"></a>Single email address, existing key</h2>
+<p>(possibly generated with <code>gpg --full-generate-key</code> or with this package previously)</p>
+<div id="provide-key-id" class="section level3">
+<h3 class="hasAnchor">
+<a href="#provide-key-id" class="anchor"></a>provide key id</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sign_commits_with_key.html">sign_commits_with_key</a></span>(<span class="dt">key =</span> <span class="st">"ABCDEFGHIJKLMNOP"</span>)</code></pre></div>
+</div>
+<div id="find-based-on-user-name-andor-email" class="section level3">
+<h3 class="hasAnchor">
+<a href="#find-based-on-user-name-andor-email" class="anchor"></a>find based on user name and/or email</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sign_commits_with_key.html">sign_commits_with_key</a></span>(<span class="dt">name =</span> <span class="st">"John Doe"</span>)</code></pre></div>
+<pre><code>#&gt; Existing key found: ABCDEFGHIJKLMNOP.
+#&gt; Corresponding email: johndoe@example.com (based on local git config).
+#&gt; 
+#&gt; Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
+#&gt; ...</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sign_commits_with_key.html">sign_commits_with_key</a></span>(<span class="dt">email =</span> <span class="st">"johndoe@example.com"</span>)</code></pre></div>
+</div>
+</div>
 </div>
 <div id="upload_key" class="section level1">
 <h1 class="hasAnchor">
@@ -219,6 +216,12 @@
 <li><code><a href="http://www.rdocumentation.org/packages/gpg/topics/gpg_keys">gpg::gpg_export(new_key)</a></code></li>
 </ul>
 </div>
+<div id="further-details" class="section level1">
+<h1 class="hasAnchor">
+<a href="#further-details" class="anchor"></a>Further details</h1>
+<p>If you use other gpg program, for example gnupg2 on Linux, you have to run the following first:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">git</span> config --global gpg.program gpg2</code></pre></div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -226,14 +229,18 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li>
+<li><a href="#background">Background</a></li>
+      <li><a href="#how-to-sign-commits">How to sign commits</a></li>
+      <li>
 <a href="#sign_commits">Sign commits</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#default-use-case">Default use-case</a></li>
-      <li><a href="#existing-key">Existing key</a></li>
-      <li><a href="#use-different-keys-in-different-repositories-">Use different keys in different repositories.</a></li>
+<li><a href="#single">Single email address, first-time usage</a></li>
+      <li><a href="#multiple">Multiple email addresses, first-time usage</a></li>
+      <li><a href="#multiple-email-addresses-existing-key">Multiple email addresses, existing key</a></li>
+      <li><a href="#single-email-address-existing-key">Single email address, existing key</a></li>
       </ul>
 </li>
       <li><a href="#upload_key">Upload your public key to repository management services</a></li>
+      <li><a href="#further-details">Further details</a></li>
       </ul>
 </div>
       </div>

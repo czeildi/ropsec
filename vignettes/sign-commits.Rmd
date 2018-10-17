@@ -17,36 +17,39 @@ knitr::opts_chunk$set(
 ```
 
 
+# Background
+
 It is good practice to sign your commits so that your commits can be verified as certainly made by you and not by someone impersonating you.
+
+<img src="../man/figures/signed_commit.png" align="center"/>
 
 One technology to enable this is [GPG](https://gnupg.org/), which has an [R wrapper](https://github.com/jeroen/gpg) written by [Jeroen Ooms](https://github.com/jeroen). The current package provides helper functions and aims to ease the process as much as possible.
 
 Having verified commits has two components:
 
-- [sign your commits](#sign_commits) (with private key)
-- [upload your public key](#upload_key) to GitHub, Gitlab, etc so that they can verify your commits (with public key)
+- [sign your commits](#sign_commits) (with private key),
+- [upload your public key](#upload_key) to GitHub, Gitlab, etc so that they can verify your commits (with public key).
 
-First, make sure that dependencies are installed:
-
-[Installation instructions](https://github.com/jeroen/gpg#installation)
-
-- OSX: if not installed already (check with `gpg --version`), `brew install gnupg`
-- Linux: if not installed already (check with `gpg --version`), `apt-get install gnupg`
-
-If you use other gpg program, for example gnupg2 on Linux, you have to run the following first:
-
-```bash
-git config --global gpg.program gpg2
-```
-
-If you are interested in background, 
+If you are interested in the background, 
 [general info on GPG](https://cran.r-project.org/web/packages/gpg/vignettes/intro.html) is highly recommended.
+
+# How to sign commits
+
+1. Install system dependencies ([GPG Installation instructions](https://github.com/jeroen/gpg#installation))
+    - OSX: `brew install gnupg` (check if installed with `gpg --version`)
+    - Linux: `apt-get install gnupg` (check if installed with `gpg --version`)
+2. install ropsec: `devtools::install_github("ropenscilabs/ropsec")`
+3. generate key and set it to sign commits
+    - [one email used with git](#single)
+    - [multiple emails used with git](#multiple)
+4. [upload key to GitHub/Gitlab/etc](#upload_key)
+
 
 # Sign commits {#sign_commits}
 
-## Default use-case
+## Single email address, first-time usage {#single}
 
-Run this function once to generate a new key and set it to sign all future commits in all repositories.
+Run the following command once in any working directory to generate a new key and set it to sign all future commits in all repositories.
 
 ```{r eval=FALSE}
 sign_commits_with_key(name = "John Doe", email = "johndoe@example.com")
@@ -56,7 +59,7 @@ sign_commits_with_key(name = "John Doe", email = "johndoe@example.com")
 message("`John Doe` (as provided) and
 `johndoe@example.com` (as provided)
 will be used to generate a new gpg key.")
-cat("Please enter password for new gpg key (can be blank): ********\n")
+cat("Please enter password for new gpg key: ********\n")
 cat("Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
 
 1: Yes
@@ -66,81 +69,29 @@ Selection: 1")
 "ABCDEFGHIJKLMNOP"
 ```
 
+Next step: [upload your public key](#upload_key) to GitHub/Gitlab/etc.
 
-
-## Existing key
-
-### provide key id
-
-```{r eval=FALSE}
-sign_commits_with_key(key = "ABCDEFGHIJKLMNOP")
-```
-
-```{r echo = FALSE}
-message("Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
-
-1: Absolutely not
-2: Not now
-3: Yes
-
-Selection: 3")
-"ABCDEFGHIJKLMNOP"
-```
-
-### find based on user name and/or email
-
-```{r eval=FALSE}
-sign_commits_with_key(name = "John Doe")
-```
-
-```{r echo=FALSE}
-message("Existing key found: ABCDEFGHIJKLMNOP.
-Corresponding email: johndoe@example.com (based on local git config).
-
-Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
-
-1: Yes
-2: Absolutely not
-3: Not now
-
-Selection: 1")
-"ABCDEFGHIJKLMNOP"
-```
-
-```{r eval=FALSE}
-sign_commits_with_key(email = "johndoe@example.com")
-```
-
-```{r echo=FALSE}
-message("Existing key found: ABCDEFGHIJKLMNOP.
-Corresponding email: johndoe@example.com (as provided).
-
-Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
-
-1: Yes
-2: Not now
-3: Absolutely not
-
-Selection: 1")
-"ABCDEFGHIJKLMNOP"
-```
-
-
-## Use different keys in different repositories.
+## Multiple email addresses, first-time usage {#multiple}
 
 One common use-case is to have a personal and a work email as well and you use git with both of them. At the first time you want to use them, generate a key and set to use it in the repository.
 
-In a personal git repository:
+Run the following in a personal git repository:
 
 ```{r eval=FALSE}
 sign_commits_with_key(name = "John Doe", email = "jd@personal.com", global = FALSE)
 ```
+
+Next step: [upload your public key](#upload_key) to GitHub/Gitlab/etc.
 
 In a work-related git repository:
 
 ```{r eval=FALSE}
 sign_commits_with_key(name = "John Doe", email = "jd@company.com", global = FALSE)
 ```
+
+Next step: [upload your public key](#upload_key) to GitHub/Gitlab/etc.
+
+## Multiple email addresses, existing key
 
 Later, for convenience the appropriate key can be identified based on email as well or if the local git config is set you can even rely on that.
 
@@ -174,8 +125,35 @@ Selection: 1")
 "1234561234561234"
 ```
 
-
 You may choose to set one of them globally which thus will be the default key to use in a repository where the repository level configs are not set to a different value.
+
+## Single email address, existing key
+
+(possibly generated with `gpg --full-generate-key` or with this package previously)
+
+### provide key id
+
+```{r eval=FALSE}
+sign_commits_with_key(key = "ABCDEFGHIJKLMNOP")
+```
+
+### find based on user name and/or email
+
+```{r eval=FALSE}
+sign_commits_with_key(name = "John Doe")
+```
+
+```{r echo=FALSE}
+message("Existing key found: ABCDEFGHIJKLMNOP.
+Corresponding email: johndoe@example.com (based on local git config).
+
+Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
+...")
+```
+
+```{r eval=FALSE}
+sign_commits_with_key(email = "johndoe@example.com")
+```
 
 # Upload your public key to repository management services {#upload_key}
 
@@ -188,3 +166,11 @@ You can use any service (GitHub, Gitlab etc) which supports GPG by manually addi
 
 - `gh_store_key(new_key)` or
 - `gpg::gpg_export(new_key)`
+
+# Further details
+
+If you use other gpg program, for example gnupg2 on Linux, you have to run the following first:
+
+```bash
+git config --global gpg.program gpg2
+```
