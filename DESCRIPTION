@@ -3,14 +3,15 @@ Type: Package
 Title: Personal Workstation Safety Check
 Version: 0.2.0
 Authors@R: c(
-    person("Ildiko", "Czeller", email = "czeildi@gmail.com", role = c("aut", "cre")), 
+    person("Ildiko", "Czeller", email = "czeildi@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-9418-4589")), 
     person("Karthik", "Ram", email = "karthik.ram@gmail.com", role = c("aut"), 
            comment = c(ORCID = " 0000-0002-0233-1757")),
     person("Kara", "Woo", role = "aut"),
     person("Bob", "Rudis", email = "bob@rud.is", role = c("aut"), 
            comment = c(ORCID = "0000-0001-5670-2640"))
   )
-Maintainer: ropensci <ropensci@ropensci.org>
+Maintainer: Ildiko Czeller <czeildi@gmail.com>
 Description: Sobriety checkpoints are designed to help ensure personal and public
     safety. Methods are provided to run "sobriety" checks on your system to ensure
     your computing environment is as safe as possible from the perspectives of

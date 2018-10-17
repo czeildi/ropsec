@@ -97,16 +97,16 @@
 <p>The following functions are implemented:</p>
 <ul>
 <li>
-<a href="#sign_commits"><code><a href="reference/sign_commits_with_key.html">sign_commits_with_key()</a></code></a> <a href="https://www.tidyverse.org/lifecycle/"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle Status"></a>
+<a href="#sign-commits"><code><a href="reference/sign_commits_with_key.html">sign_commits_with_key()</a></code></a> <a href="https://www.tidyverse.org/lifecycle/"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle Status"></a>
 </li>
 <li>
-<a href="#sign_commits"><code><a href="reference/gh_store_key.html">gh_store_key()</a></code></a> <a href="https://www.tidyverse.org/lifecycle/"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle Status"></a>
+<a href="#sign-commits"><code><a href="reference/gh_store_key.html">gh_store_key()</a></code></a> <a href="https://www.tidyverse.org/lifecycle/"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle Status"></a>
 </li>
 <li>
-<a href="#system_checks"><code><a href="reference/summarize_system_checks.html">summarize_system_checks()</a></code></a> <a href="https://www.tidyverse.org/lifecycle/"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle Status"></a>
+<a href="#lightweight-system-checks"><code><a href="reference/summarize_system_checks.html">summarize_system_checks()</a></code></a> <a href="https://www.tidyverse.org/lifecycle/"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle Status"></a>
 </li>
 <li>
-<a href="#full_on_audit"><code><a href="reference/full_on_audit.html">full_on_audit()</a></code></a> <a href="https://www.tidyverse.org/lifecycle/"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle Status"></a>
+<a href="#audit"><code><a href="reference/full_on_audit.html">full_on_audit()</a></code></a> <a href="https://www.tidyverse.org/lifecycle/"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle Status"></a>
 </li>
 </ul>
 </div>
@@ -120,22 +120,18 @@
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ropsec)
-
-<span class="co"># current verison</span>
-<span class="kw">packageVersion</span>(<span class="st">"ropsec"</span>)</code></pre></div>
-<pre><code>## [1] '0.2.0'</code></pre>
-<div id="sign_commits" class="section level3">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ropsec)</code></pre></div>
+<div id="sign-commits-with-gpg-key" class="section level3">
 <h3 class="hasAnchor">
-<a href="#sign_commits" class="anchor"></a>Sign commits</h3>
-<p>For details see <code><a href="articles/sign-commits.html">vignette("sign-commits", "ropsec")</a></code></p>
+<a href="#sign-commits-with-gpg-key" class="anchor"></a>Sign commits with GPG key</h3>
+<p>For details see <a href="https://ropenscilabs.github.io/ropsec/articles/sign-commits.html"><code><a href="articles/sign-commits.html">vignette("sign-commits", "ropsec")</a></code></a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">key &lt;-<span class="st"> </span><span class="kw"><a href="reference/sign_commits_with_key.html">sign_commits_with_key</a></span>(<span class="st">"John Doe"</span>, <span class="st">"john.doe@gmail.com"</span>)
 <span class="kw"><a href="reference/gh_store_key.html">gh_store_key</a></span>(key)</code></pre></div>
 <p><img src="reference/figures/signed_commit.png" align="center"></p>
 </div>
-<div id="system_checks" class="section level3">
+<div id="lightweight-system-checks" class="section level3">
 <h3 class="hasAnchor">
-<a href="#system_checks" class="anchor"></a>Lightweight system checks</h3>
+<a href="#lightweight-system-checks" class="anchor"></a>Lightweight system checks</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ropsec<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ropsec/topics/summarize_system_checks">summarize_system_checks</a></span>()</code></pre></div>
 <pre><code>✔ | OK F W S | Context
 ✔ |  1       | SSH Configuration - existence
@@ -146,9 +142,9 @@
 ✖ |  0 1     | Firewall is enabled
 # ...</code></pre>
 </div>
-<div id="full_on_audit" class="section level3">
+<div id="audit-local-machine-in-detail" class="section level3">
 <h3 class="hasAnchor">
-<a href="#full_on_audit" class="anchor"></a>Audit</h3>
+<a href="#audit-local-machine-in-detail" class="anchor"></a>Audit local machine in detail</h3>
 <p>E.g. what ports are used.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">full_audit_results &lt;-<span class="st"> </span><span class="kw"><a href="reference/full_on_audit.html">full_on_audit</a></span>()</code></pre></div>
 </div>
@@ -191,7 +187,7 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Ildiko Czeller <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Ildiko Czeller <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-9418-4589" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" height="16"></a> </li>
 <li>Karthik Ram <br><small class="roles"> Author </small> <a href="https://orcid.org/%200000-0002-0233-1757" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" height="16"></a> </li>
 <li>Kara Woo <br><small class="roles"> Author </small>  </li>
 <li>Bob Rudis <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-5670-2640" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" height="16"></a> </li>

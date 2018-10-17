@@ -13,10 +13,10 @@ What's Inside The Tin
 
 The following functions are implemented:
 
--   [`sign_commits_with_key()`](#sign_commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
--   [`gh_store_key()`](#sign_commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
--   [`summarize_system_checks()`](#system_checks) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
--   [`full_on_audit()`](#full_on_audit) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
+-   [`sign_commits_with_key()`](#sign-commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
+-   [`gh_store_key()`](#sign-commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
+-   [`summarize_system_checks()`](#lightweight-system-checks) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
+-   [`full_on_audit()`](#audit) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
 
 Installation
 ------------
@@ -36,16 +36,11 @@ Usage
 
 ``` r
 library(ropsec)
-
-# current verison
-packageVersion("ropsec")
 ```
 
-    ## [1] '0.2.0'
+### Sign commits with GPG key
 
-### Sign commits
-
-For details see `vignette("sign-commits", "ropsec")`
+For details see [`vignette("sign-commits", "ropsec")`](https://ropenscilabs.github.io/ropsec/articles/sign-commits.html).
 
 ``` r
 key <- sign_commits_with_key("John Doe", "john.doe@gmail.com")
@@ -69,7 +64,7 @@ ropsec::summarize_system_checks()
     ✖ |  0 1     | Firewall is enabled
     # ...
 
-### Audit
+### Audit local machine in detail
 
 E.g. what ports are used.
 

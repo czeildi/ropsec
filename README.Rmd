@@ -1,6 +1,11 @@
 ---
 output: rmarkdown::github_document
 ---
+
+```{r message=FALSE, warning=FALSE, error=FALSE, include=FALSE}
+options(width=120)
+```
+
 ![](./man/figures/Loose_lips_might_sink_ships.jpg)
 
 # rOpenSci Unconf 18 Project : ropsec
@@ -15,10 +20,10 @@ Personal Workstation Safety Checks and Utilities
 
 The following functions are implemented:
 
-- [`sign_commits_with_key()`](#sign_commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
-- [`gh_store_key()`](#sign_commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
-- [`summarize_system_checks()`](#system_checks) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
-- [`full_on_audit()`](#full_on_audit) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
+- [`sign_commits_with_key()`](#sign-commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
+- [`gh_store_key()`](#sign-commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
+- [`summarize_system_checks()`](#lightweight-system-checks) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
+- [`full_on_audit()`](#audit) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
 
 ## Installation
 
@@ -32,24 +37,15 @@ To have vignettes available locally:
 devtools::install_github("ropenscilabs/ropsec", build_vignettes = TRUE)
 ```
 
-
-```{r message=FALSE, warning=FALSE, error=FALSE, include=FALSE}
-options(width=120)
-```
-
 ## Usage
 
 ```{r message=FALSE, warning=FALSE, error=FALSE}
 library(ropsec)
-
-# current verison
-packageVersion("ropsec")
-
 ```
 
-### Sign commits {#sign_commits}
+### Sign commits with GPG key
 
-For details see `vignette("sign-commits", "ropsec")`
+For details see [`vignette("sign-commits", "ropsec")`](https://ropenscilabs.github.io/ropsec/articles/sign-commits.html).
 
 ```{r eval = FALSE}
 key <- sign_commits_with_key("John Doe", "john.doe@gmail.com")
@@ -58,7 +54,7 @@ gh_store_key(key)
 
 <img src="man/figures/signed_commit.png" align="center"/>
 
-### Lightweight system checks {#system_checks}
+### Lightweight system checks
 
 ```{r eval=FALSE}
 ropsec::summarize_system_checks()
@@ -75,7 +71,7 @@ ropsec::summarize_system_checks()
 # ...
 ```
 
-### Audit {#full_on_audit}
+### Audit local machine in detail
 
 E.g. what ports are used.
 
