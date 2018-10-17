@@ -174,3 +174,11 @@ If you use other gpg program, for example gnupg2 on Linux, you have to run the f
 ```bash
 git config --global gpg.program gpg2
 ```
+
+In addition to generating a GPG keys, the following git config elements are manipulated:
+
+- `gpg.program`
+- `commit.gpgsign`
+- `user.email`
+- `user.name` (read-only)
+- `user.signingkey`
