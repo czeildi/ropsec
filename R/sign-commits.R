@@ -191,6 +191,15 @@ set_key_to_sign_commits <- function(key, global) {
       commit.gpgsign = "true",
       user.email = new_git_user_email
     )
+    message(
+      crayon::red(clisymbols::symbol$bullet), " ",
+      crayon::silver(
+        "The next step is uploading the public key",
+        "to GitHub or alternative (unless it is already uploaded),",
+        " which you can do by passing",
+        "the return value (\"" %+% key %+% "\") to `gh_store_key`."
+      )
+    )
     return(key)
   }
   invisible(NULL)
