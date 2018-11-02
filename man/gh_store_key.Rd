@@ -25,9 +25,9 @@ GitHub.
 If you do not have a GitHub Personal Access Token setup or you want to store
 your key on Gitlab or other service you can either call this function without
 a token and then add the printed public key manually or call
-\code{\link[gpg:gpg_export]{gpg::gpg_export()}} with \code{newkey} and add the returned public key manually.
+\code{cat(}\code{\link[gpg:gpg_export]{gpg::gpg_export()}}\code{)} with \code{newkey} and add the returned public key manually.
 See
-https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
+\href{https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/}{this page}
 for more information on tokens.
 }
 \examples{

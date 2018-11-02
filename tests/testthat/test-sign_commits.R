@@ -284,7 +284,11 @@ test_that("if token is not provided, public key returned with message", {
   mockery::stub(gh_store_key, "gpg::gpg_export", "public_key_block")
   expect_message(
     gh_store_key("ABCD"),
-    "Could not add.*public_key_block"
+    "Could not add.*token is not provided"
+  )
+  expect_output(
+    gh_store_key("ABCD"),
+    "public_key_block"
   )
 })
 
@@ -310,7 +314,11 @@ test_that("if other error from github, communicate unsuccessful upload", {
   mockery::stub(gh_store_key, "gh_attempt_key_upload", gh_error)
   expect_message(
     gh_store_key("ABCD", "mytoken"),
-    "Could not add.*public_key_block"
+    "Could not add"
+  )
+  expect_output(
+    gh_store_key("ABCD", "mytoken"),
+    "public_key_block"
   )
 })
 

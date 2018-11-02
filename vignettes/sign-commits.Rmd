@@ -165,7 +165,7 @@ To upload to GitHub without leaving your R session you need the following:
 You can use any service (GitHub, Gitlab etc) which supports GPG by manually adding your **public** GPG key which you can get by
 
 - `gh_store_key(new_key)` or
-- `gpg::gpg_export(new_key)`
+- `cat(gpg::gpg_export(new_key))`
 
 # Further details
 

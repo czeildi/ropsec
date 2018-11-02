@@ -82,9 +82,9 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
 #' If you do not have a GitHub Personal Access Token setup or you want to store
 #' your key on Gitlab or other service you can either call this function without
 #' a token and then add the printed public key manually or call
-#' [gpg::gpg_export()] with `newkey` and add the returned public key manually.
+#' `cat(`[gpg::gpg_export()]`)` with `newkey` and add the returned public key manually.
 #' See
-#' https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
+#' [this page](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
 #' for more information on tokens.
 #'
 #' @param key A character string containing the ID of a key to use. See
@@ -107,13 +107,10 @@ gh_store_key <- function(key, .token = NULL) {
   pubkey <- gpg::gpg_export(key)
   if (is.null(.token)) {
     message(
-      paste(
-        "Could not add public key to GitHub as token is not provided.",
-        "Copy the text below and paste it at https://github.com/settings/gpg/new\n",
-        pubkey,
-        sep = "\n"
-      )
+      "Could not add public key to GitHub as token is not provided.\n",
+      "Copy the text below and paste it at \nhttps://github.com/settings/gpg/new\n"
     )
+    cat(pubkey)
     return(invisible(pubkey))
   }
   gh_attempt <- gh_attempt_key_upload(pubkey, .token)
@@ -123,13 +120,10 @@ gh_store_key <- function(key, .token = NULL) {
       message("Public GPG key is already stored on GitHub.")
     } else {
       message(
-        paste(
-          "Could not add public key to GitHub.",
-          "Copy the text below and paste it at https://github.com/settings/gpg/new",
-          pubkey,
-          sep = "\n"
-        )
+        "Could not add public key to GitHub.\n",
+        "Copy the text below and paste it at \nhttps://github.com/settings/gpg/new"
       )
+      cat(pubkey)
     }
   } else if (!gh_attempt$emails[[1]]$verified) {
     warning(
