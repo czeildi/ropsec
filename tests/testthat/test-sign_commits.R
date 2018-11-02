@@ -47,6 +47,7 @@ test_that("if neither key nor name provided, name is extracted from git config",
   mockery::stub(sign_commits_with_key, "extract_git_option", git_mock)
   mockery::stub(sign_commits_with_key, "generate_key_with_name_and_email", "id1")
   mockery::stub(sign_commits_with_key, "set_key_to_sign_commits", "id1")
+  mockery::stub(sign_commits_with_key, "get_key_candidates", data.frame())
   sign_commits_with_key(email = "johndoe@example.com")
   mockery::expect_args(git_mock, 1, name = "user.name")
 })
