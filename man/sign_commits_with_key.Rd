@@ -2,7 +2,7 @@
 % Please edit documentation in R/sign-commits.R
 \name{sign_commits_with_key}
 \alias{sign_commits_with_key}
-\title{GPG sign all git commits}
+\title{GPG sign all git commits and/or retrieve ID of existing key}
 \usage{
 sign_commits_with_key(name, email, key = NULL, global = TRUE)
 }
@@ -13,7 +13,9 @@ git configuration.}
 
 \item{email}{A character string containing your email address. If not
 provided, \code{sign_commits_with_key()} will look first in your local then in
-your global git configuration.}
+your global git configuration. The email address must be identical to the
+one you use with the corresponding repository management service (i.e.
+GitHub, etc).}
 
 \item{key}{A character string containing the ID of a pre-existing key to use.
 If \code{NULL} and key cannot be found based on name and email unambiguously, a

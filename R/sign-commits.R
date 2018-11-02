@@ -1,4 +1,4 @@
-#' GPG sign all git commits
+#' GPG sign all git commits and/or retrieve ID of existing key
 #'
 #' Configure git to sign all commits using GPG. If no existing key is provided
 #' or found, `sign_commits_with_key()` will create a new key and use it for
@@ -19,7 +19,9 @@
 #'   git configuration.
 #' @param email A character string containing your email address. If not
 #'   provided, `sign_commits_with_key()` will look first in your local then in
-#'   your global git configuration.
+#'   your global git configuration. The email address must be identical to the
+#'   one you use with the corresponding repository management service (i.e.
+#'   GitHub, etc).
 #' @param key A character string containing the ID of a pre-existing key to use.
 #'   If `NULL` and key cannot be found based on name and email unambiguously, a
 #'   new key will be created.
@@ -93,7 +95,8 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
 #' @param key A character string containing the ID of a key to use, use the
 #'   return value of `sign_commits_with_key()`. If you are not sure, what key
 #'   you want to use, you can list your locally available keys with
-#'   [gpg::gpg_list_keys()].
+#'   [gpg::gpg_list_keys()]. The email address corresponding to this key must be
+#'   identical to the email address that you use with GitHub.
 #' @param .token GitHub Personal Access Token with at least `write:gpg_key`
 #'   scope enabled. You can grant access to tokens
 #'   [here](https://github.com/settings/tokens).

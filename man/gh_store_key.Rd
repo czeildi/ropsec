@@ -10,7 +10,8 @@ gh_store_key(key, .token = NULL)
 \item{key}{A character string containing the ID of a key to use, use the
 return value of \code{sign_commits_with_key()}. If you are not sure, what key
 you want to use, you can list your locally available keys with
-\code{\link[gpg:gpg_list_keys]{gpg::gpg_list_keys()}}.}
+\code{\link[gpg:gpg_list_keys]{gpg::gpg_list_keys()}}. The email address corresponding to this key must be
+identical to the email address that you use with GitHub.}
 
 \item{.token}{GitHub Personal Access Token with at least \code{write:gpg_key}
 scope enabled. You can grant access to tokens

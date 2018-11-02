@@ -49,7 +49,7 @@ If you are interested in the background,
 
 ## Single email address, first-time usage {#single}
 
-Run the following command once in any working directory to generate a new key and set it to sign all future commits in all repositories.
+Run the following command once in any working directory to generate a new key and set it to sign all future commits in all repositories. The email address must be identical to the one you use with the corresponding repository management service (i.e. GitHub, etc).
 
 ```{r eval=FALSE}
 sign_commits_with_key(name = "John Doe", email = "johndoe@example.com")
@@ -73,9 +73,9 @@ Next step: [upload your public key](#upload_key) to GitHub/Gitlab/etc.
 
 ## Multiple email addresses, first-time usage {#multiple}
 
-One common use-case is to have a personal and a work email as well and you use git with both of them. At the first time you want to use them, generate a key and set to use it in the repository.
+One common use-case is to have a personal and a work email or two different work emails as well and you use git with both of them. At the first time you want to use them, generate a key and set to use it in the repository. The email addresses must be identical to the ones you use with the corresponding repository management service(s) (i.e. GitHub, etc).
 
-Run the following in a personal git repository:
+Run the following in a personal (aka email address 1) git repository:
 
 ```{r eval=FALSE}
 sign_commits_with_key(name = "John Doe", email = "jd@personal.com", global = FALSE)
