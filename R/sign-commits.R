@@ -112,6 +112,7 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
 #' }
 gh_store_key <- function(key, .token = NULL) {
   pubkey <- gpg::gpg_export(key)
+
   if (pubkey == "") {
     stop(
       "Key of id `", key, "` is not found on local system. ",
@@ -119,42 +120,22 @@ gh_store_key <- function(key, .token = NULL) {
       call. = FALSE
     )
   }
+
   if (is.null(.token)) {
-    message(
-      crayon::red(clisymbols::symbol$cross), " ",
-      crayon::silver("Could not add public key to GitHub as token is not provided.\n"),
-      crayon::red(clisymbols::symbol$bullet), " ",
-      crayon::silver(
-        "Copy the text below and paste it at ",
-        crayon::underline("https://github.com/settings/gpg/new")
-      ),
-      "\n"
-    )
-    cat(pubkey)
+    communicate_pubkey_if_no_token(pubkey)
     return(invisible(pubkey))
   }
+
   gh_attempt <- gh_attempt_key_upload(pubkey, .token)
 
   if (inherits(gh_attempt, "try-error")) {
     if (inherits(attr(gh_attempt, "condition"), "http_error_422")) {
-      message(
-        crayon::green(
-          clisymbols::symbol$tick, " ",
-          "Public GPG key is already stored on GitHub."
-        )
-      )
+      message(crayon::green(
+        clisymbols::symbol$tick, " ",
+        "Public GPG key is already stored on GitHub."
+      ))
     } else {
-      message(
-        crayon::red(clisymbols::symbol$cross), " ",
-        crayon::silver("Could not add public key to GitHub.\n"),
-        crayon::red(clisymbols::symbol$bullet), " ",
-        crayon::silver(
-          "Copy the text below and paste it at ",
-          crayon::underline("https://github.com/settings/gpg/new")
-        ),
-        "\n"
-      )
-      cat(pubkey)
+      communicate_pubkey_if_unsuccessful_upload(pubkey)
     }
   } else if (!gh_attempt$emails[[1]]$verified) {
     warning(
@@ -167,6 +148,34 @@ gh_store_key <- function(key, .token = NULL) {
     )
   }
   invisible(pubkey)
+}
+
+communicate_pubkey_if_no_token <- function(pubkey) {
+  message(
+    crayon::red(clisymbols::symbol$cross), " ",
+    crayon::silver("Could not add public key to GitHub as token is not provided.\n"),
+    crayon::red(clisymbols::symbol$bullet), " ",
+    crayon::silver(
+      "Copy the text below and paste it at ",
+      crayon::underline("https://github.com/settings/gpg/new")
+    ),
+    "\n"
+  )
+  cat(pubkey)
+}
+
+communicate_pubkey_if_unsuccessful_upload <- function(pubkey) {
+  message(
+    crayon::red(clisymbols::symbol$cross), " ",
+    crayon::silver("Could not add public key to GitHub.\n"),
+    crayon::red(clisymbols::symbol$bullet), " ",
+    crayon::silver(
+      "Copy the text below and paste it at ",
+      crayon::underline("https://github.com/settings/gpg/new")
+    ),
+    "\n"
+  )
+  cat(pubkey)
 }
 
 gh_attempt_key_upload <- function(pubkey, .token) {
