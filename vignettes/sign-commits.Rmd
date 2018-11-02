@@ -182,3 +182,10 @@ In addition to generating a GPG keys, the following git config elements are mani
 - `user.email`
 - `user.name` (read-only)
 - `user.signingkey`
+
+## usage alongside packrat
+
+If you want to sign commits in a git repository where you use [packrat](https://rstudio.github.io/packrat/) but you do not want to add ropsec as a dependency to your project, you can use the below, if `ropsec` is installed  on your machine:
+
+- `packrat::with_extlib(c("ropsec", "git2r", "getPass", "rstudioapi"), ropsec::sign_commits_with_key(..., global = FALSE))`
+- `packrat::with_extlib(c("ropsec", "git2r"), ropsec::gh_store_key(...))`

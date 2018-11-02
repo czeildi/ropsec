@@ -1,3 +1,5 @@
+* improve documentation
+
 # 0.2.0
 
 * create pkgdown website
