@@ -39,10 +39,10 @@ If you are interested in the background,
     - OSX: `brew install gnupg` (check if installed with `gpg --version`)
     - Linux: `apt-get install gnupg` (check if installed with `gpg --version`)
 2. install ropsec: `devtools::install_github("ropenscilabs/ropsec")`
-3. generate key and set it to sign commits
+3. generate private - public keypair and set it to sign commits
     - [one email used with git](#single)
     - [multiple emails used with git](#multiple)
-4. [upload key to GitHub/Gitlab/etc](#upload_key)
+4. [upload public key to GitHub/Gitlab/etc](#upload_key)
 
 
 # Sign commits {#sign_commits}
@@ -157,15 +157,17 @@ sign_commits_with_key(email = "johndoe@example.com")
 
 # Upload your public key to repository management services {#upload_key}
 
+To generate a new key or find an existing one, use [`sign_commits_with_key`](#sign_commits). In the following `new_key` refers to the id of the key you want to upload that you can get as the return value of [`sign_commits_with_key`](#sign_commits).
+
 To upload to GitHub without leaving your R session you need the following:
 
 - a personal access token with at least `write:gpg_key` scope enabled. You can grant access to tokens [here](https://github.com/settings/tokens).
-- `gh_store_key(key, token)`
+- `gh_store_key(key = new_key, .token = token)`
 
 You can use any service (GitHub, Gitlab etc) which supports GPG by manually adding your **public** GPG key which you can get by
 
-- `gh_store_key(new_key)` or
-- `cat(gpg::gpg_export(new_key))`
+- `gh_store_key(key = new_key)` or
+- `cat(gpg::gpg_export(key = new_key))`
 
 # Further details
 

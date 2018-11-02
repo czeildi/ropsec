@@ -7,9 +7,10 @@
 gh_store_key(key, .token = NULL)
 }
 \arguments{
-\item{key}{A character string containing the ID of a key to use. See
-\code{\link[gpg:gpg_list_keys]{gpg::gpg_list_keys()}}; if you haven't created a key, see
-\code{\link[=sign_commits_with_key]{sign_commits_with_key()}} or \code{\link[gpg:gpg_keygen]{gpg::gpg_keygen()}}.}
+\item{key}{A character string containing the ID of a key to use, use the
+return value of \code{sign_commits_with_key()}. If you are not sure, what key
+you want to use, you can list your locally available keys with
+\code{\link[gpg:gpg_list_keys]{gpg::gpg_list_keys()}}.}
 
 \item{.token}{GitHub Personal Access Token with at least \code{write:gpg_key}
 scope enabled. You can grant access to tokens
@@ -25,17 +26,16 @@ GitHub.
 If you do not have a GitHub Personal Access Token setup or you want to store
 your key on Gitlab or other service you can either call this function without
 a token and then add the printed public key manually or call
-\code{cat(}\code{\link[gpg:gpg_export]{gpg::gpg_export()}}\code{)} with \code{newkey} and add the returned public key manually.
-See
-\href{https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/}{this page}
+\code{cat(}\code{\link[gpg:gpg_export]{gpg::gpg_export()}}\code{)} with \code{newkey} and add the returned public key
+manually. See \href{https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/}{this page}
 for more information on tokens.
 }
 \examples{
 \dontrun{
-newkey <- sign_commits_with_key("John Doe", "johndoe@example.com")
+new_key <- sign_commits_with_key("John Doe", "johndoe@example.com")
 # if you do not have personal access token for github
-gh_store_key(newkey)
+gh_store_key(key = new_key)
 # if your GitHub Personal Access Token is stored in `.Renviron` as GITHUB_PAT
-gh_store_key(newkey, Sys.getenv('GITHUB_PAT'))
+gh_store_key(key = new_key, .token = Sys.getenv('GITHUB_PAT'))
 }
 }
