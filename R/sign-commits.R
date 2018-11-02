@@ -252,11 +252,22 @@ generate_key_with_name_and_email <- function(name, email) {
   if (passphrase == "") {
     passphrase <- NULL
   }
-  gpg::gpg_keygen(
+  generate_key_with_checked_params(name, email, passphrase)
+}
+
+generate_key_with_checked_params <- function(name, email, passphrase) {
+  key <- gpg::gpg_keygen(
     name = name,
     email = email,
     passphrase = passphrase
   )
+  cat(
+    crayon::green(
+      clisymbols::symbol$tick,
+      "Key with id `" %+% key %+% "` successfully generated.\n"
+    )
+  )
+  key
 }
 
 stop_due_to_multiple_keys <- function(key_candidates) {

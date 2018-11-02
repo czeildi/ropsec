@@ -207,7 +207,7 @@ test_that("extract git option: not available", {
 test_that("safe getPass is called to retrieve password", {
   getPassMock <- mockery::mock("")
   mockery::stub(generate_key_with_name_and_email, "getPass::getPass", getPassMock)
-  mockery::stub(generate_key_with_name_and_email, "gpg::gpg_keygen", "")
+  mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", "")
   generate_key_with_name_and_email("John Doe", "jd@example.com")
   mockery::expect_called(getPassMock, 1)
 })
@@ -222,8 +222,8 @@ test_that("throw error if gpg password prompt cancelled", {
 
 test_that("generate key: if no password, use NULL", {
   mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
-  keygen_mock <- mockery::mock()
-  mockery::stub(generate_key_with_name_and_email, "gpg::gpg_keygen", keygen_mock)
+  keygen_mock <- mockery::mock("id")
+  mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", keygen_mock)
   generate_key_with_name_and_email("John Doe", "jd@example.com")
   mockery::expect_args(
     keygen_mock, 1,
@@ -233,7 +233,7 @@ test_that("generate key: if no password, use NULL", {
 
 test_that("generate key: message used name and email", {
   mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
-  mockery::stub(generate_key_with_name_and_email, "gpg::gpg_keygen", NULL)
+  mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", "id")
   expect_message(
     generate_key_with_name_and_email("John Doe", "jd@example.com"),
     "`John Doe` \\(as provided\\).*`jd@example\\.com` \\(as provided\\)"
@@ -242,7 +242,7 @@ test_that("generate key: message used name and email", {
 
 test_that("generate key: message based on source of param", {
   mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
-  mockery::stub(generate_key_with_name_and_email, "gpg::gpg_keygen", NULL)
+  mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", "id")
   name <- "John Doe"
   attr(name, "local") <- TRUE
   email <- "jd@example.com"
@@ -250,6 +250,14 @@ test_that("generate key: message based on source of param", {
   expect_message(
     generate_key_with_name_and_email(name, email),
     ".*\\(based on local git config\\).*\\(based on global git config\\)"
+  )
+})
+
+test_that("generate key: success is communicated", {
+  mockery::stub(generate_key_with_checked_params, "gpg::gpg_keygen", "id")
+  expect_output(
+    generate_key_with_checked_params("JD", "jd@jd.com", NULL),
+    "successfully generated"
   )
 })
 
