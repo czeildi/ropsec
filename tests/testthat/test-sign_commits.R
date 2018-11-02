@@ -335,3 +335,11 @@ test_that("if upload is successful but key is unverified, communicate it", {
     "Uploaded key is unverified"
   )
 })
+
+test_that("error if user tries to upload non-existent key", {
+  mockery::stub(gh_store_key, "gpg::gpg_export", "")
+  expect_error(
+    gh_store_key("non-existent key"),
+    "Key of id `non-existent key` is not found on local system. You can generate one with `sign_commits_with_key`"
+  )
+})

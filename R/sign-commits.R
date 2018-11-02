@@ -108,6 +108,13 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
 #' }
 gh_store_key <- function(key, .token = NULL) {
   pubkey <- gpg::gpg_export(key)
+  if (pubkey == "") {
+    stop(
+      "Key of id `", key, "` is not found on local system. ",
+      "You can generate one with `sign_commits_with_key`",
+      call. = FALSE
+    )
+  }
   if (is.null(.token)) {
     message(
       crayon::red(clisymbols::symbol$cross), " ",
