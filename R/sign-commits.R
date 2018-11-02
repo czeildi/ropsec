@@ -62,8 +62,11 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
   } else if (nrow(key_candidates) == 1L) {
     key <- key_candidates$id
     message(
-      "Existing key found: `", key, "`.\n",
-      "Corresponding email: `", email, "`", communicate_source_of_param(email), ".\n"
+      crayon::green(clisymbols::symbol$tick), " ",
+      crayon::silver(
+        "Existing key found: `" %+% key %+% "`.\n" %+%
+        "Corresponding email: `" %+% email %+% "`" %+% communicate_source_of_param(email) %+% ".\n"
+      )
     )
   } else {
     stop_due_to_multiple_keys(key_candidates)
@@ -107,8 +110,14 @@ gh_store_key <- function(key, .token = NULL) {
   pubkey <- gpg::gpg_export(key)
   if (is.null(.token)) {
     message(
-      "Could not add public key to GitHub as token is not provided.\n",
-      "Copy the text below and paste it at \nhttps://github.com/settings/gpg/new\n"
+      crayon::red(clisymbols::symbol$cross), " ",
+      crayon::silver("Could not add public key to GitHub as token is not provided.\n"),
+      crayon::red(clisymbols::symbol$bullet), " ",
+      crayon::silver(
+        "Copy the text below and paste it at ",
+        crayon::underline("https://github.com/settings/gpg/new")
+      ),
+      "\n"
     )
     cat(pubkey)
     return(invisible(pubkey))
@@ -117,17 +126,29 @@ gh_store_key <- function(key, .token = NULL) {
 
   if (inherits(gh_attempt, "try-error")) {
     if (inherits(attr(gh_attempt, "condition"), "http_error_422")) {
-      message("Public GPG key is already stored on GitHub.")
+      message(
+        crayon::green(
+          clisymbols::symbol$tick, " ",
+          "Public GPG key is already stored on GitHub."
+        )
+      )
     } else {
       message(
-        "Could not add public key to GitHub.\n",
-        "Copy the text below and paste it at \nhttps://github.com/settings/gpg/new"
+        crayon::red(clisymbols::symbol$cross), " ",
+        crayon::silver("Could not add public key to GitHub.\n"),
+        crayon::red(clisymbols::symbol$bullet), " ",
+        crayon::silver(
+          "Copy the text below and paste it at ",
+          crayon::underline("https://github.com/settings/gpg/new")
+        ),
+        "\n"
       )
       cat(pubkey)
     }
   } else if (!gh_attempt$emails[[1]]$verified) {
     warning(
-      "Uploaded key in unverified. ",
+      crayon::red(clisymbols::symbol$warning), " ",
+      "Uploaded key is unverified. ",
       "Is it possible that the email you used to generate the key and ",
       "the email you use with GitHub are different? ",
       "If so, delete the uploaded key by hand from GitHub (https://github.com/settings/keys) and try again.",
@@ -240,7 +261,8 @@ generate_key_with_name_and_email <- function(name, email) {
 
 stop_due_to_multiple_keys <- function(key_candidates) {
   stop(
-    paste0(utils::capture.output(key_candidates), collapse = "\n"),
+    paste0(utils::capture.output(key_candidates), collapse = "\n"), "\n",
+    crayon::red(clisymbols::symbol$cross), " ",
     "There are multiple keys,\n",
     "you must disambiguate with providing the key param or ",
     "deleting the keys you do not want to use.",
@@ -280,11 +302,12 @@ assemble_confirmation_message <- function(key, global) {
     original_git_user_email <- ""
   }
   paste0(
-    "Do you want to sign all future commits with `", key, "` in ",
-    ifelse(global, "all repositories?", "this repository?"), "\n",
+    "Do you want to sign future commits with `", key, "` in ",
+    crayon::bold(ifelse(global, "all repositories?", "this repository?")), "\n",
     ifelse(
       original_git_user_email != new_git_user_email,
       paste0(
+        crayon::red(clisymbols::symbol$warning), " ",
         "This will also set your user.email from `",
         original_git_user_email, "` to `", new_git_user_email, "`.\n"
       ),

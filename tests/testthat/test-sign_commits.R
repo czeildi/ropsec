@@ -116,14 +116,9 @@ test_that("set_key_to_sign_commits: if user did confirm, git2r config is called 
 test_that("assemble_confirmation_message: ask for confirmation with meaningful message", {
   mockery::stub(assemble_confirmation_message, "extract_email_for_key", "jd@example.com")
   mockery::stub(assemble_confirmation_message, "extract_git_option", "jd2@company.com")
-  expect_equal(
+  expect_match(
     assemble_confirmation_message("test_id", "global" = FALSE),
-    paste0(
-      "Do you want to sign all future commits with `test_id` ",
-      "in this repository?\n",
-      "This will also set your user.email ",
-      "from `jd2@company.com` to `jd@example.com`.\n"
-    )
+    "from `jd2@company\\.com` to `jd@example\\.com`"
   )
 })
 
@@ -329,6 +324,6 @@ test_that("if upload is successful but key is unverified, communicate it", {
   mockery::stub(gh_store_key, "gh_attempt_key_upload", gh_answer)
   expect_warning(
     gh_store_key("ABCD", "mytoken"),
-    "Uploaded key in unverified."
+    "Uploaded key is unverified"
   )
 })

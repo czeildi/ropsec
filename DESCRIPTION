@@ -39,7 +39,9 @@ Imports:
     utils,
     openssl,
     sys,
-    getPass
+    getPass,
+    crayon,
+    clisymbols
 RoxygenNote: 6.1.0
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)

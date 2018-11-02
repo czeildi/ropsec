@@ -10,5 +10,6 @@
 #' @docType package
 #' @import testthat sys stringi openssl gpg
 #' @importFrom stats setNames
+#' @importFrom crayon %+%
 #' @importFrom utils read.csv
 NULL
