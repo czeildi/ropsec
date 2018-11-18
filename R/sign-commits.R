@@ -269,7 +269,7 @@ generate_key_with_name_and_email <- function(name, email) {
     msg = paste(
       "Please enter password for new gpg key",
       "(can only be blank if you are using terminal),",
-      "to cancel press `Cancel` in Rstudio on `Ctrl + c` in terminal: "
+      "to cancel press `Cancel` in Rstudio or `Ctrl + c` in terminal: "
     )
   )
   if (is.null(passphrase)) {
