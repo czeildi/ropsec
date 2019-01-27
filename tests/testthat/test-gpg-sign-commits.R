@@ -31,7 +31,7 @@ test_that("commits are signed with found existing key", {
 
 test_that("if neither key nor name provided, name is extracted from git config", {
   git_mock <- mockery::mock()
-  mockery::stub(sign_commits_with_key, "extract_git_option", git_mock)
+  mockery::stub(sign_commits_with_key, "find_git_option", git_mock)
   mockery::stub(sign_commits_with_key, "generate_key_with_name_and_email", "id1")
   mockery::stub(sign_commits_with_key, "set_key_to_sign_commits", "id1")
   mockery::stub(sign_commits_with_key, "get_key_candidates", data.frame())
@@ -41,7 +41,7 @@ test_that("if neither key nor name provided, name is extracted from git config",
 
 test_that("if neither key nor email provided, email is extracted from git config", {
   git_mock <- mockery::mock()
-  mockery::stub(sign_commits_with_key, "extract_git_option", git_mock)
+  mockery::stub(sign_commits_with_key, "find_git_option", git_mock)
   mockery::stub(sign_commits_with_key, "get_key_candidates", data.frame())
   mockery::stub(sign_commits_with_key, "generate_key_with_name_and_email", "id1")
   mockery::stub(sign_commits_with_key, "set_key_to_sign_commits", "id1")
@@ -50,7 +50,7 @@ test_that("if neither key nor email provided, email is extracted from git config
 })
 
 test_that("if neither key nor email provided, email is extracted from git config and used to generate new key", {
-  mockery::stub(sign_commits_with_key, "extract_git_option", "johndoe@example.com")
+  mockery::stub(sign_commits_with_key, "find_git_option", "johndoe@example.com")
   mockery::stub(sign_commits_with_key, "get_key_candidates", data.frame())
   generate_key_mock <- mockery::mock()
   mockery::stub(
@@ -74,6 +74,17 @@ test_that("if one existing key found, it is communicated in message", {
     sign_commits_with_key(email = "jd@example.com"),
     "Existing key found: `test_id`.\nCorresponding email: `jd@example.com`"
   )
+})
+
+test_that("set_key_to_sign_commits: if everything already set, it is communicated and no further confirmation needed", {
+  mockery::stub(set_key_to_sign_commits, "isCommitSigningAlreadySet", TRUE)
+  user_confirmation_mock <- mockery::mock()
+  mockery::stub(set_key_to_sign_commits, "require_confirmation_from_user", FALSE)
+  expect_message(
+    set_key_to_sign_commits("test_key", global = FALSE),
+    "already set"
+  )
+  mockery::expect_called(user_confirmation_mock, 0)
 })
 
 test_that("set_key_to_sign_commits: if user did not confirm, git2r config not called and NULL returned", {
@@ -154,45 +165,45 @@ test_that("extract email for given key", {
   expect_equal(extract_email_for_key(2), 6)
 })
 
-test_that("extract git option: locally available", {
+test_that("find git option: locally available", {
   git_config_mock <- mockery::mock(
     list(
       "local" = list("my_option" = "local_value"),
       "global" = list("my_option" = "global_value")
     )
   )
-  mockery::stub(extract_git_option, "git2r::config", git_config_mock)
+  mockery::stub(find_git_option, "git2r::config", git_config_mock)
   expected <- "local_value"
   attr(expected, "local") <- TRUE
-  expect_equal(extract_git_option("my_option"), expected)
+  expect_equal(find_git_option("my_option"), expected)
 })
 
-test_that("extract git option: only globally available", {
+test_that("find git option: only globally available", {
   git_config_mock <- mockery::mock(
     list(
       "local" = list("my_other_option" = "local_value"),
       "global" = list("my_option" = "global_value")
     )
   )
-  mockery::stub(extract_git_option, "git2r::config", git_config_mock)
+  mockery::stub(find_git_option, "git2r::config", git_config_mock)
   expected <- "global_value"
   attr(expected, "local") <- FALSE
-  expect_equal(extract_git_option("my_option"), expected)
+  expect_equal(find_git_option("my_option"), expected)
 })
 
-test_that("extract git option: not available", {
+test_that("find git option: not available", {
   git_config_mock <- mockery::mock(
     list(
       "local" = list("my_other_option" = "local_value"),
       "global" = list("my_option" = "global_value")
     )
   )
-  mockery::stub(extract_git_option, "git2r::config", git_config_mock)
-  expect_equal(extract_git_option("nonexistent_option"), NULL)
+  mockery::stub(find_git_option, "git2r::config", git_config_mock)
+  expect_equal(find_git_option("nonexistent_option"), NULL)
 })
 
 test_that("error is thrown if email is neither provided nor available in git config", {
-  mockery::stub(sign_commits_with_key, "extract_git_option", NULL)
+  mockery::stub(sign_commits_with_key, "find_git_option", NULL)
   mockery::stub(sign_commits_with_key, "get_key_candidates", data.frame())
   expect_error(
     sign_commits_with_key(global = FALSE),
@@ -208,6 +219,6 @@ test_that("gpg program is set at first time", {
   mockery::stub(set_key_to_sign_commits, "git2r::config", git_config_mock)
   set_key_to_sign_commits("ABCD", global = FALSE)
   mockery::expect_args(
-    git_config_mock, 1, global = TRUE, gpg.program = "gpg"
+    git_config_mock, 1, global = FALSE, gpg.program = "gpg"
   )
 })

@@ -51,10 +51,10 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
   }
 
   if (missing(name)) {
-    name <- extract_git_option("user.name")
+    name <- find_git_option("user.name")
   }
   if (missing(email)) {
-    email <- extract_git_option("user.email")
+    email <- find_git_option("user.email")
   }
 
   key_candidates <- get_key_candidates(name, email)
@@ -78,32 +78,55 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
 }
 
 set_key_to_sign_commits <- function(key, global) {
-  if (is.null(extract_git_option("gpg.program"))) {
+  if (isCommitSigningAlreadySet(key, global)) {
+    message(
+      crayon::green(clisymbols::symbol$tick), " ",
+      crayon::silver(
+        "Everything is already set on your local machine for signing commits."
+      )
+    )
+    communicateNeededKeyUpload(key)
+    return(key)
+  }
+  if (is.null(extract_git_option("gpg.program", global = global))) {
     git2r::config(
-      global = TRUE, gpg.program = "gpg"
+      global = global, gpg.program = "gpg"
     )
   }
   confirmation_message <- assemble_confirmation_message(key, global)
-  if (require_confirmation_from_user(confirmation_message)) {
-    new_git_user_email <- extract_email_for_key(key)
-    git2r::config(
-      global = global,
-      user.signingkey = key,
-      commit.gpgsign = "true",
-      user.email = new_git_user_email
-    )
-    message(
-      crayon::red(clisymbols::symbol$bullet), " ",
-      crayon::silver(
-        "The next step is uploading the public key",
-        "to GitHub or alternative (unless it is already uploaded),",
-        " which you can do by passing",
-        "the return value (\"" %+% key %+% "\") to `gh_store_key`."
-      )
-    )
-    return(key)
+  if (!require_confirmation_from_user(confirmation_message)) {
+    return(invisible(NULL))
   }
-  invisible(NULL)
+  new_git_user_email <- extract_email_for_key(key)
+  git2r::config(
+    global = global,
+    user.signingkey = key,
+    commit.gpgsign = "true",
+    user.email = new_git_user_email
+  )
+  communicateNeededKeyUpload(key)
+  key
+}
+
+isCommitSigningAlreadySet <- function(key, global) {
+  existing_config <- git2r::config()[[ifelse(global, "global", "local")]]
+  if (is.null(existing_config[["gpg.program"]])) {
+    return(FALSE)
+  }
+  if (!isTRUE(existing_config[["user.email"]] == extract_email_for_key(key))) {
+    return(FALSE)
+  }
+  if (!isTRUE(existing_config[["commit.gpgsign"]] == "true")) {
+    return(FALSE)
+  }
+  if (!isTRUE(existing_config[["user.signingkey"]] == key)) {
+    return(FALSE)
+  }
+  TRUE
+}
+
+extract_git_option <- function(name, global) {
+  git2r::config()[[ifelse(global, "global", "local")]][[name]]
 }
 
 extract_email_for_key <- function(key) {
@@ -111,18 +134,16 @@ extract_email_for_key <- function(key) {
   subset(keys, keys$id == key)$email
 }
 
-extract_git_option <- function(name, allow_global = TRUE) {
+find_git_option <- function(name) {
   git_config <- git2r::config()
   if (!is.null(git_config[["local"]][[name]])) {
     value <- git_config[["local"]][[name]]
     attr(value, "local") <- TRUE
-  } else if (allow_global == TRUE) {
+  } else {
     value <- git_config[["global"]][[name]]
     if (!is.null(value)) {
       attr(value, "local") <- FALSE
     }
-  } else {
-    value <- NULL
   }
   value
 }
@@ -182,7 +203,7 @@ require_confirmation_from_user <- function(message) {
 
 assemble_confirmation_message <- function(key, global) {
   new_git_user_email <- extract_email_for_key(key)
-  original_git_user_email <- extract_git_option("user.email", allow_global = global)
+  original_git_user_email <- extract_git_option("user.email", global = global)
   if (is.null(original_git_user_email)) {
     original_git_user_email <- ""
   }
@@ -197,6 +218,18 @@ assemble_confirmation_message <- function(key, global) {
         original_git_user_email, "` to `", new_git_user_email, "`.\n"
       ),
       ""
+    )
+  )
+}
+
+communicateNeededKeyUpload <- function(key) {
+  message(
+    crayon::red(clisymbols::symbol$bullet), " ",
+    crayon::silver(
+      "The next step is uploading the public key",
+      "to GitHub or alternative (unless it is already uploaded),",
+      " which you can do by passing",
+      "the return value (\"" %+% key %+% "\") to `gh_store_key`."
     )
   )
 }
