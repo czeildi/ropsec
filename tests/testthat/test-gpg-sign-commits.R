@@ -17,19 +17,6 @@ test_that("error in sign_commits_with_key if multiple keys for given name, email
   expect_error(sign_commits_with_key())
 })
 
-test_that("new key generated if no existing key found", {
-  mockery::stub(sign_commits_with_key, "get_key_candidates", data.frame(id = c()))
-  generate_key_mock <- mockery::mock()
-  mockery::stub(
-    sign_commits_with_key,
-    "generate_key_with_name_and_email",
-    generate_key_mock
-  )
-  mockery::stub(sign_commits_with_key, "set_key_to_sign_commits", "id1")
-  sign_commits_with_key()
-  mockery::expect_called(generate_key_mock, 1)
-})
-
 test_that("commits are signed with found existing key", {
   sign_mock <- mockery::mock()
   mockery::stub(sign_commits_with_key, "set_key_to_sign_commits", sign_mock)
@@ -204,87 +191,6 @@ test_that("extract git option: not available", {
   expect_equal(extract_git_option("nonexistent_option"), NULL)
 })
 
-test_that("safe getPass is called to retrieve password", {
-  mockery::stub(generate_key_with_name_and_email, "utils::askYesNo", TRUE)
-  getPassMock <- mockery::mock("")
-  mockery::stub(generate_key_with_name_and_email, "getPass::getPass", getPassMock)
-  mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", "")
-  generate_key_with_name_and_email("John Doe", "jd@example.com")
-  mockery::expect_called(getPassMock, 1)
-})
-
-test_that("throw error if gpg password prompt cancelled", {
-  mockery::stub(generate_key_with_name_and_email, "utils::askYesNo", TRUE)
-  mockery::stub(generate_key_with_name_and_email, "getPass::getPass", NULL)
-  expect_error(
-    generate_key_with_name_and_email("John Doe", "jd@example.com"),
-    "GPG key generation cancelled by user"
-  )
-})
-
-test_that("throw error if use? password prompt cancelled", {
-  mockery::stub(generate_key_with_name_and_email, "utils::askYesNo", NA)
-  expect_error(
-    generate_key_with_name_and_email("John Doe", "jd@example.com"),
-    "GPG key generation cancelled by user"
-  )
-})
-
-test_that("generate key: if no password in terminal, use NULL", {
-  mockery::stub(generate_key_with_name_and_email, "utils::askYesNo", TRUE)
-  mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
-  keygen_mock <- mockery::mock("id")
-  mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", keygen_mock)
-  generate_key_with_name_and_email("John Doe", "jd@example.com")
-  mockery::expect_args(
-    keygen_mock, 1,
-    name = "John Doe", email = "jd@example.com", passphrase = NULL
-  )
-})
-
-test_that("generate key: if no password in Rstudio, use NULL", {
-  mockery::stub(generate_key_with_name_and_email, "utils::askYesNo", FALSE)
-  keygen_mock <- mockery::mock("id")
-  mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", keygen_mock)
-  generate_key_with_name_and_email("John Doe", "jd@example.com")
-  mockery::expect_args(
-    keygen_mock, 1,
-    name = "John Doe", email = "jd@example.com", passphrase = NULL
-  )
-})
-
-test_that("generate key: message used name and email", {
-  mockery::stub(generate_key_with_name_and_email, "utils::askYesNo", TRUE)
-  mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
-  mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", "id")
-  expect_message(
-    generate_key_with_name_and_email("John Doe", "jd@example.com"),
-    "`John Doe` \\(as provided\\).*`jd@example\\.com` \\(as provided\\)"
-  )
-})
-
-test_that("generate key: message based on source of param", {
-  mockery::stub(generate_key_with_name_and_email, "utils::askYesNo", TRUE)
-  mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
-  mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", "id")
-  name <- "John Doe"
-  attr(name, "local") <- TRUE
-  email <- "jd@example.com"
-  attr(email, "local") <- FALSE
-  expect_message(
-    generate_key_with_name_and_email(name, email),
-    ".*\\(based on local git config\\).*\\(based on global git config\\)"
-  )
-})
-
-test_that("generate key: success is communicated", {
-  mockery::stub(generate_key_with_checked_params, "gpg::gpg_keygen", "id")
-  expect_output(
-    generate_key_with_checked_params("JD", "jd@jd.com", NULL),
-    "successfully generated"
-  )
-})
-
 test_that("error is thrown if email is neither provided nor available in git config", {
   mockery::stub(sign_commits_with_key, "extract_git_option", NULL)
   mockery::stub(sign_commits_with_key, "get_key_candidates", data.frame())
@@ -303,67 +209,5 @@ test_that("gpg program is set at first time", {
   set_key_to_sign_commits("ABCD", global = FALSE)
   mockery::expect_args(
     git_config_mock, 1, global = TRUE, gpg.program = "gpg"
-  )
-})
-
-context("gh store key")
-
-test_that("if token is not provided, public key returned with message", {
-  mockery::stub(gh_store_key, "gpg::gpg_export", "public_key_block")
-  expect_message(
-    gh_store_key("ABCD"),
-    "Could not add.*token is not provided"
-  )
-  expect_output(
-    gh_store_key("ABCD"),
-    "public_key_block"
-  )
-})
-
-test_that("if key already exists, appropriate message is returned", {
-  mockery::stub(gh_store_key, "gpg::gpg_export", "public_key_block")
-  gh_error <- ""
-  class(gh_error) <- "try-error"
-  gh_condition <- ""
-  class(gh_condition) <- "http_error_422"
-  attr(gh_error, "condition") <- gh_condition
-  mockery::stub(gh_store_key, "gh_attempt_key_upload", gh_error)
-  expect_message(
-    gh_store_key("ABCD", "mytoken"),
-    "Public GPG key is already stored on GitHub."
-  )
-})
-
-test_that("if other error from github, communicate unsuccessful upload", {
-  mockery::stub(gh_store_key, "gpg::gpg_export", "public_key_block")
-  gh_error <- ""
-  class(gh_error) <- "try-error"
-  attr(gh_error, "condition") <- ""
-  mockery::stub(gh_store_key, "gh_attempt_key_upload", gh_error)
-  expect_message(
-    gh_store_key("ABCD", "mytoken"),
-    "Could not add"
-  )
-  expect_output(
-    gh_store_key("ABCD", "mytoken"),
-    "public_key_block"
-  )
-})
-
-test_that("if upload is successful but key is unverified, communicate it", {
-  mockery::stub(gh_store_key, "gpg::gpg_export", "public_key_block")
-  gh_answer <- list("emails" = list(list("verified" = FALSE)))
-  mockery::stub(gh_store_key, "gh_attempt_key_upload", gh_answer)
-  expect_warning(
-    gh_store_key("ABCD", "mytoken"),
-    "Uploaded key is unverified"
-  )
-})
-
-test_that("error if user tries to upload non-existent key", {
-  mockery::stub(gh_store_key, "gpg::gpg_export", "")
-  expect_error(
-    gh_store_key("non-existent key"),
-    "Key of id `non-existent key` is not found on local system. You can generate one with `sign_commits_with_key`"
   )
 })
