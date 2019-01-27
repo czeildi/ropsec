@@ -265,13 +265,24 @@ generate_key_with_name_and_email <- function(name, email) {
     "`", email, "`", communicate_source_of_param(email), "\n",
     "will be used to generate a new gpg key."
   )
-  passphrase <- getPass::getPass(
-    msg = paste(
-      "Please enter password for new gpg key",
-      "(can only be blank if you are using terminal),",
-      "to cancel press `Cancel` in Rstudio or `Ctrl + c` in terminal: "
+  password_wanted <- utils::askYesNo("Do you want to protect your new gpg key with a password?")
+  if (is.na(password_wanted)) {
+    stop(
+      "GPG key generation cancelled by user, stopping execution.",
+      call. = FALSE
     )
-  )
+  }
+  if (password_wanted) {
+    passphrase <- getPass::getPass(
+      msg = paste(
+        "Please enter password for new gpg key",
+        "(can only be blank if you are using terminal),",
+        "to cancel press `Cancel` in Rstudio or `Ctrl + c` in terminal: "
+      )
+    )
+  } else {
+    passphrase <- ""
+  }
   if (is.null(passphrase)) {
     stop(
       "GPG key generation cancelled by user, stopping execution.",
