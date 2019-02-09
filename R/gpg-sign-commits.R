@@ -78,74 +78,42 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
 }
 
 set_key_to_sign_commits <- function(key, global) {
-  if (isCommitSigningAlreadySet(key, global)) {
+  if (is_commit_signing_already_set(key, global)) {
     message(
       crayon::green(clisymbols::symbol$tick), " ",
       crayon::silver(
         "Everything is already set on your local machine for signing commits."
       )
     )
-    communicateNeededKeyUpload(key)
+    communicate_needed_key_upload(key)
     return(key)
   }
+
   if (is.null(extract_git_option("gpg.program", global = global))) {
-    git2r::config(
-      global = global, gpg.program = "gpg"
+    git2r::config(global = global, gpg.program = "gpg")
+  }
+
+  new_git_user_email <- extract_email_for_key(key)
+  required_git_config <- list(
+    "user.signingkey" = key,
+    "commit.gpgsign" = "true",
+    "user.email" = new_git_user_email
+  )
+  if (global && does_local_config_conflict_required_global_config(required_git_config)) {
+    message(
+      "First, you will be asked to confirm the overwrite of your local config",
+      " and then the setting of your global config."
     )
+    set_key_to_sign_commits(key, global = FALSE)
   }
   confirmation_message <- assemble_confirmation_message(key, global)
   if (!require_confirmation_from_user(confirmation_message)) {
     return(invisible(NULL))
   }
-  new_git_user_email <- extract_email_for_key(key)
-  git2r::config(
-    global = global,
-    user.signingkey = key,
-    commit.gpgsign = "true",
-    user.email = new_git_user_email
-  )
-  communicateNeededKeyUpload(key)
+
+  do.call(git2r::config, append(list("global" = global), required_git_config))
+  communicate_needed_key_upload(key)
   key
-}
-
-isCommitSigningAlreadySet <- function(key, global) {
-  existing_config <- git2r::config()[[ifelse(global, "global", "local")]]
-  if (is.null(existing_config[["gpg.program"]])) {
-    return(FALSE)
-  }
-  if (!isTRUE(existing_config[["user.email"]] == extract_email_for_key(key))) {
-    return(FALSE)
-  }
-  if (!isTRUE(existing_config[["commit.gpgsign"]] == "true")) {
-    return(FALSE)
-  }
-  if (!isTRUE(existing_config[["user.signingkey"]] == key)) {
-    return(FALSE)
-  }
-  TRUE
-}
-
-extract_git_option <- function(name, global) {
-  git2r::config()[[ifelse(global, "global", "local")]][[name]]
-}
-
-extract_email_for_key <- function(key) {
-  keys <- gpg::gpg_list_keys()
-  subset(keys, keys$id == key)$email
-}
-
-find_git_option <- function(name) {
-  git_config <- git2r::config()
-  if (!is.null(git_config[["local"]][[name]])) {
-    value <- git_config[["local"]][[name]]
-    attr(value, "local") <- TRUE
-  } else {
-    value <- git_config[["global"]][[name]]
-    if (!is.null(value)) {
-      attr(value, "local") <- FALSE
-    }
-  }
-  value
 }
 
 get_key_candidates <- function(user_name, user_email) {
@@ -222,7 +190,7 @@ assemble_confirmation_message <- function(key, global) {
   )
 }
 
-communicateNeededKeyUpload <- function(key) {
+communicate_needed_key_upload <- function(key) {
   message(
     crayon::red(clisymbols::symbol$bullet), " ",
     crayon::silver(

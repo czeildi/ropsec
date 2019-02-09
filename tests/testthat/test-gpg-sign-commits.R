@@ -77,7 +77,7 @@ test_that("if one existing key found, it is communicated in message", {
 })
 
 test_that("set_key_to_sign_commits: if everything already set, it is communicated and no further confirmation needed", {
-  mockery::stub(set_key_to_sign_commits, "isCommitSigningAlreadySet", TRUE)
+  mockery::stub(set_key_to_sign_commits, "is_commit_signing_already_set", TRUE)
   user_confirmation_mock <- mockery::mock()
   mockery::stub(set_key_to_sign_commits, "require_confirmation_from_user", FALSE)
   expect_message(
@@ -154,52 +154,6 @@ test_that("find matching existing keys: matching key returned if both ids provid
     nrow(filter_keys_on_name_and_email_if_provided(df, "a", "c")),
     1L
   )
-})
-
-test_that("extract email for given key", {
-  mockery::stub(
-    extract_email_for_key,
-    "gpg::gpg_list_keys",
-    data.frame(id = 1:2, email = 5:6)
-  )
-  expect_equal(extract_email_for_key(2), 6)
-})
-
-test_that("find git option: locally available", {
-  git_config_mock <- mockery::mock(
-    list(
-      "local" = list("my_option" = "local_value"),
-      "global" = list("my_option" = "global_value")
-    )
-  )
-  mockery::stub(find_git_option, "git2r::config", git_config_mock)
-  expected <- "local_value"
-  attr(expected, "local") <- TRUE
-  expect_equal(find_git_option("my_option"), expected)
-})
-
-test_that("find git option: only globally available", {
-  git_config_mock <- mockery::mock(
-    list(
-      "local" = list("my_other_option" = "local_value"),
-      "global" = list("my_option" = "global_value")
-    )
-  )
-  mockery::stub(find_git_option, "git2r::config", git_config_mock)
-  expected <- "global_value"
-  attr(expected, "local") <- FALSE
-  expect_equal(find_git_option("my_option"), expected)
-})
-
-test_that("find git option: not available", {
-  git_config_mock <- mockery::mock(
-    list(
-      "local" = list("my_other_option" = "local_value"),
-      "global" = list("my_option" = "global_value")
-    )
-  )
-  mockery::stub(find_git_option, "git2r::config", git_config_mock)
-  expect_equal(find_git_option("nonexistent_option"), NULL)
 })
 
 test_that("error is thrown if email is neither provided nor available in git config", {
