@@ -65,10 +65,11 @@ gh_store_key <- function(key, .token = NULL, open_url = is_interactive()) {
       "Uploaded key is unverified. ",
       "Is it possible that the email you used to generate the key and ",
       "the email you use with GitHub are different? ",
-      "If so, delete the uploaded key by hand from GitHub (https://github.com/settings/keys) and try again.",
+      "If so, delete the uploaded key by hand from GitHub (", crayon::underline("https://github.com/settings/keys"), ") and try again.",
       call. = FALSE
     )
     if (open_url) {
+      Sys.sleep(1)
       utils::browseURL("https://github.com/settings/keys")
     }
   }
@@ -76,39 +77,53 @@ gh_store_key <- function(key, .token = NULL, open_url = is_interactive()) {
 }
 
 communicate_pubkey_if_no_token <- function(pubkey, open_url) {
-  new_url <- "https://github.com/settings/gpg/new"
-  message(
-    crayon::red(clisymbols::symbol$cross), " ",
-    crayon::silver("Could not add public key to GitHub as token is not provided.\n"),
-    crayon::red(clisymbols::symbol$bullet), " ",
-    crayon::silver(
-      "Copy the text below and paste it at ", crayon::underline(new_url)
-    ),
-    "\n"
+  communicate_pubkey_for_manual_addition(
+    pubkey,
+    reason = "Could not add public key to GitHub as token is not provided."
   )
-  cat(pubkey)
+  new_url <- "https://github.com/settings/gpg/new"
   if (open_url) {
+    Sys.sleep(1)
     utils::browseURL(new_url)
   }
   invisible(new_url)
 }
 
 communicate_pubkey_if_unsuccessful_upload <- function(pubkey, open_url) {
-  new_url <- "https://github.com/settings/gpg/new"
-  message(
-    crayon::red(clisymbols::symbol$cross), " ",
-    crayon::silver("Could not add public key to GitHub.\n"),
-    crayon::red(clisymbols::symbol$bullet), " ",
-    crayon::silver(
-      "Copy the text below and paste it at ", crayon::underline(new_url)
-    ),
-    "\n"
+  communicate_pubkey_for_manual_addition(
+    pubkey,
+    reason = "Could not add public key to GitHub."
   )
-  cat(pubkey)
+  new_url <- "https://github.com/settings/gpg/new"
   if (open_url) {
+    Sys.sleep(1)
     utils::browseURL(new_url)
   }
   invisible(new_url)
+}
+
+communicate_pubkey_for_manual_addition <- function(pubkey, reason) {
+  message(
+    crayon::red(clisymbols::symbol$cross), " ", crayon::silver(reason)
+  )
+  new_url <- "https://github.com/settings/gpg/new"
+  if (is_clipr_available()) {
+    clipr::write_clip(pubkey)
+    message(crayon::green(
+      clisymbols::symbol$tick, "The public key is on your clipboard."
+    ))
+    message(
+      crayon::red(clisymbols::symbol$bullet), " ",
+      crayon::silver("Paste it at ", crayon::underline(new_url), ".\n")
+    )
+  } else {
+    message(
+      crayon::red(clisymbols::symbol$bullet), " ",
+      crayon::silver("Copy the text below and paste it at ", crayon::underline(new_url), ".\n")
+    )
+    cat(pubkey)
+  }
+  invisible(pubkey)
 }
 
 gh_attempt_key_upload <- function(pubkey, .token) {

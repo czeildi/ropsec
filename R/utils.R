@@ -1,3 +1,7 @@
+is_clipr_available <- function() {
+  clipr::clipr_available() && !is_testing()
+}
+
 is_interactive <- function() {
   base::interactive() && !is_testing()
 }
