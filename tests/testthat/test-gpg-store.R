@@ -5,11 +5,11 @@ describe("gh_store_key", {
   it("if token is not provided, public key returned with message", {
     mockery::stub(gh_store_key, "gpg::gpg_export", "public_key_block")
     expect_message(
-      gh_store_key("ABCD"),
+      gh_store_key("ABCD", open_url = FALSE),
       "Could not add.*token is not provided"
     )
     expect_output(
-      gh_store_key("ABCD"),
+      gh_store_key("ABCD", open_url = FALSE),
       "public_key_block"
     )
   })
@@ -35,11 +35,11 @@ describe("gh_store_key", {
     attr(gh_error, "condition") <- ""
     mockery::stub(gh_store_key, "gh_attempt_key_upload", gh_error)
     expect_message(
-      gh_store_key("ABCD", "mytoken"),
+      gh_store_key("ABCD", "mytoken", open_url = FALSE),
       "Could not add"
     )
     expect_output(
-      gh_store_key("ABCD", "mytoken"),
+      gh_store_key("ABCD", "mytoken", open_url = FALSE),
       "public_key_block"
     )
   })
@@ -49,7 +49,7 @@ describe("gh_store_key", {
     gh_answer <- list("emails" = list(list("verified" = FALSE)))
     mockery::stub(gh_store_key, "gh_attempt_key_upload", gh_answer)
     expect_warning(
-      gh_store_key("ABCD", "mytoken"),
+      gh_store_key("ABCD", "mytoken", open_url = FALSE),
       "Uploaded key is unverified"
     )
   })

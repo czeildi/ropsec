@@ -4,7 +4,7 @@
 \alias{gh_store_key}
 \title{Add a public key to your GitHub account}
 \usage{
-gh_store_key(key, .token = NULL)
+gh_store_key(key, .token = NULL, open_url = interactive())
 }
 \arguments{
 \item{key}{A character string containing the ID of a key to use, use the
@@ -16,6 +16,8 @@ identical to the email address that you use with GitHub.}
 \item{.token}{GitHub Personal Access Token with at least \code{write:gpg_key}
 scope enabled. You can grant access to tokens
 \href{https://github.com/settings/tokens}{here}.}
+
+\item{open_url}{boolean, whether open relevant URLs automatically.}
 }
 \description{
 \code{gh_store_key()} adds the public key associated with a key ID to your GitHub

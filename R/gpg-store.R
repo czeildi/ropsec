@@ -21,6 +21,7 @@
 #' @param .token GitHub Personal Access Token with at least `write:gpg_key`
 #'   scope enabled. You can grant access to tokens
 #'   [here](https://github.com/settings/tokens).
+#' @param open_url boolean, whether open relevant URLs automatically.
 #' @export
 #'
 #' @examples
@@ -31,7 +32,7 @@
 #' # if your GitHub Personal Access Token is stored in `.Renviron` as GITHUB_PAT
 #' gh_store_key(key = new_key, .token = Sys.getenv('GITHUB_PAT'))
 #' }
-gh_store_key <- function(key, .token = NULL) {
+gh_store_key <- function(key, .token = NULL, open_url = interactive()) {
   pubkey <- gpg::gpg_export(key)
 
   if (pubkey == "") {
@@ -43,7 +44,7 @@ gh_store_key <- function(key, .token = NULL) {
   }
 
   if (is.null(.token)) {
-    communicate_pubkey_if_no_token(pubkey)
+    communicate_pubkey_if_no_token(pubkey, open_url = open_url)
     return(invisible(pubkey))
   }
 
@@ -56,7 +57,7 @@ gh_store_key <- function(key, .token = NULL) {
         "Public GPG key is already stored on GitHub."
       ))
     } else {
-      communicate_pubkey_if_unsuccessful_upload(pubkey)
+      communicate_pubkey_if_unsuccessful_upload(pubkey, open_url = open_url)
     }
   } else if (!gh_attempt$emails[[1]]$verified) {
     warning(
@@ -67,36 +68,47 @@ gh_store_key <- function(key, .token = NULL) {
       "If so, delete the uploaded key by hand from GitHub (https://github.com/settings/keys) and try again.",
       call. = FALSE
     )
+    if (open_url) {
+      utils::browseURL("https://github.com/settings/keys")
+    }
   }
   invisible(pubkey)
 }
 
-communicate_pubkey_if_no_token <- function(pubkey) {
+communicate_pubkey_if_no_token <- function(pubkey, open_url = interactive()) {
+  new_url <- "https://github.com/settings/gpg/new"
   message(
     crayon::red(clisymbols::symbol$cross), " ",
     crayon::silver("Could not add public key to GitHub as token is not provided.\n"),
     crayon::red(clisymbols::symbol$bullet), " ",
     crayon::silver(
-      "Copy the text below and paste it at ",
-      crayon::underline("https://github.com/settings/gpg/new")
+      "Copy the text below and paste it at ", crayon::underline(new_url)
     ),
     "\n"
   )
   cat(pubkey)
+  if (open_url) {
+    utils::browseURL(new_url)
+  }
+  invisible(new_url)
 }
 
-communicate_pubkey_if_unsuccessful_upload <- function(pubkey) {
+communicate_pubkey_if_unsuccessful_upload <- function(pubkey, open_url = interactive()) {
+  new_url <- "https://github.com/settings/gpg/new"
   message(
     crayon::red(clisymbols::symbol$cross), " ",
     crayon::silver("Could not add public key to GitHub.\n"),
     crayon::red(clisymbols::symbol$bullet), " ",
     crayon::silver(
-      "Copy the text below and paste it at ",
-      crayon::underline("https://github.com/settings/gpg/new")
+      "Copy the text below and paste it at ", crayon::underline(new_url)
     ),
     "\n"
   )
   cat(pubkey)
+  if (open_url) {
+    utils::browseURL(new_url)
+  }
+  invisible(new_url)
 }
 
 gh_attempt_key_upload <- function(pubkey, .token) {
