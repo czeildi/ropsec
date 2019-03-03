@@ -1,3 +1,11 @@
+is_interactive <- function() {
+  base::interactive() && !is_testing()
+}
+
+is_testing <- function() {
+  identical(Sys.getenv("TESTTHAT"), "true")
+}
+
 os_type <- function() {
   .Platform$OS.type
 }

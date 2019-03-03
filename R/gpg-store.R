@@ -32,7 +32,7 @@
 #' # if your GitHub Personal Access Token is stored in `.Renviron` as GITHUB_PAT
 #' gh_store_key(key = new_key, .token = Sys.getenv('GITHUB_PAT'))
 #' }
-gh_store_key <- function(key, .token = NULL, open_url = interactive()) {
+gh_store_key <- function(key, .token = NULL, open_url = is_interactive()) {
   pubkey <- gpg::gpg_export(key)
 
   if (pubkey == "") {
@@ -75,7 +75,7 @@ gh_store_key <- function(key, .token = NULL, open_url = interactive()) {
   invisible(pubkey)
 }
 
-communicate_pubkey_if_no_token <- function(pubkey, open_url = interactive()) {
+communicate_pubkey_if_no_token <- function(pubkey, open_url) {
   new_url <- "https://github.com/settings/gpg/new"
   message(
     crayon::red(clisymbols::symbol$cross), " ",
@@ -93,7 +93,7 @@ communicate_pubkey_if_no_token <- function(pubkey, open_url = interactive()) {
   invisible(new_url)
 }
 
-communicate_pubkey_if_unsuccessful_upload <- function(pubkey, open_url = interactive()) {
+communicate_pubkey_if_unsuccessful_upload <- function(pubkey, open_url) {
   new_url <- "https://github.com/settings/gpg/new"
   message(
     crayon::red(clisymbols::symbol$cross), " ",

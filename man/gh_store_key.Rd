@@ -4,7 +4,7 @@
 \alias{gh_store_key}
 \title{Add a public key to your GitHub account}
 \usage{
-gh_store_key(key, .token = NULL, open_url = interactive())
+gh_store_key(key, .token = NULL, open_url = is_interactive())
 }
 \arguments{
 \item{key}{A character string containing the ID of a key to use, use the
