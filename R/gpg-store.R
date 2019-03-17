@@ -1,38 +1,47 @@
-#' Add a public key to your GitHub account
+#' Add a public key to your GitHub or gitlab or other account
 #'
-#' `gh_store_key()` adds the public key associated with a key ID to your GitHub
-#' account. If you have a GitHub Personal Access Token it will attempt to use
-#' it; if it fails, it will print the public key for you to copy manually into
-#' GitHub.
+#' `store_public_key()` adds the public key associated with a key ID to your
+#' GitHub or Gitlab account if token is available. Otherwise it will print the
+#' public key for you to copy manually into GitHub/Gitlab or elsewhere.
 #'
-#' If you do not have a GitHub Personal Access Token setup or you want to store
-#' your key on Gitlab or other service you can either call this function without
-#' a token and then add the printed public key manually or call
-#' `cat(`[gpg::gpg_export()]`)` with `newkey` and add the returned public key
-#' manually. See [this
-#' page](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
-#' for more information on tokens.
+#' If you do not have a Personal Access Token set up or you want to store your
+#' key on other service you can either call this function without a token and
+#' then add the printed public key manually or call `cat(`[gpg::gpg_export()]`)`
+#' with `newkey` and add the returned public key manually. For more information
+#' see [GitHub
+#' tokens](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
+#' or [gitlab
+#' tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html).
 #'
 #' @param key A character string containing the ID of a key to use, use the
-#'   return value of `sign_commits_with_key()`. If you are not sure, what key
+#'   return value of [`sign_commits_with_key()`]. If you are not sure, what key
 #'   you want to use, you can list your locally available keys with
 #'   [gpg::gpg_list_keys()]. The email address corresponding to this key must be
-#'   identical to the email address that you use with GitHub.
-#' @param .token GitHub Personal Access Token with at least `write:gpg_key`
-#'   scope enabled. You can grant access to tokens
-#'   [here](https://github.com/settings/tokens).
-#' @param open_url boolean, whether open relevant URLs automatically.
+#'   identical to the email address that you use with GitHub/Gitlab etc.
+#' @param service NULL currently supported services: `"gh"` for GitHub (access
+#'   token is necessary) or `"gl"` for gitlab (url and access token is
+#'   necessary). If left NULL, no upload is attempted, public key is returned
+#'   for manual upload.
+#' @param .token Either GitHub Personal Access Token with at least
+#'   `write:gpg_key` scope enabled. You can grant access to tokens
+#'   [here](https://github.com/settings/tokens). Supply this with `service =
+#'   "gh"`. Or Gitlab personal access token with at least `api` scope enabled.
+#'   Supply this with `service = "gl"`. If your PAT is stored in an environment
+#'   variable `GITHUB_PAT` (for `service = "gh"`) or `GITLAB_PAT` (for `service
+#'   = "gl"`) you do not need to supply the token manually.
+#' @param gitlab_url NULL by default, or your gitlab url for `service = "gl"`.
+#' @param open_url logical, whether open relevant URLs automatically.
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' new_key <- sign_commits_with_key("John Doe", "johndoe@example.com")
 #' # if you do not have personal access token for github
-#' gh_store_key(key = new_key)
-#' # if your GitHub Personal Access Token is stored in `.Renviron` as GITHUB_PAT
-#' gh_store_key(key = new_key, .token = Sys.getenv('GITHUB_PAT'))
+#' store_public_key(key = new_key)
+#' # if your GitHub Personal Access Token is stored in `.Renviron` as MY_GITHUB_PAT
+#' store_public_key(key = new_key, .token = Sys.getenv('MY_GITHUB_PAT'))
 #' }
-gh_store_key <- function(key, .token = NULL, open_url = is_interactive()) {
+store_public_key <- function(key, service = NULL, .token = NULL, gitlab_url = NULL, open_url = is_interactive()) {
   pubkey <- gpg::gpg_export(key)
 
   if (pubkey == "") {

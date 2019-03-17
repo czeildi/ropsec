@@ -2,8 +2,8 @@
 
 S3method(print,lynis_obj)
 export(full_on_audit)
-export(gh_store_key)
 export(sign_commits_with_key)
+export(store_public_key)
 export(summarize_system_checks)
 import(gpg)
 import(openssl)

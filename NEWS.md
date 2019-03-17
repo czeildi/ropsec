@@ -1,3 +1,4 @@
+* extend `gh_store_key()` and rename to `store_public_key()`
 * improve documentation
 
 # 0.2.0

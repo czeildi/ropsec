@@ -14,7 +14,7 @@ What's Inside The Tin
 The following functions are implemented:
 
 -   [`sign_commits_with_key()`](#sign-commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
--   [`gh_store_key()`](#sign-commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
+-   [`store_public_key()`](#sign-commits) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/)
 -   [`summarize_system_checks()`](#lightweight-system-checks) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
 -   [`full_on_audit()`](#audit) [![Lifecycle Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/)
 
@@ -44,7 +44,7 @@ For details see [`vignette("sign-commits", "ropsec")`](https://ropenscilabs.gith
 
 ``` r
 key <- sign_commits_with_key("John Doe", "john.doe@gmail.com")
-gh_store_key(key)
+store_public_key(key)
 ```
 
 <img src="man/figures/signed_commit.png" align="center"/>

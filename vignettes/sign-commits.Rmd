@@ -167,11 +167,17 @@ To generate a new key or find an existing one, use [`sign_commits_with_key`](#si
 To upload to GitHub without leaving your R session you need the following:
 
 - a personal access token with at least `write:gpg_key` scope enabled. You can grant access to tokens [here](https://github.com/settings/tokens).
-- `gh_store_key(key = new_key, .token = token)`
+- supply your token manually or store it in `GITHUB_PAT` env var
+- `store_public_key(key = new_key, service = "gh")` or `store_public_key(key = new_key, service = "gh", .token = token)`
+
+To upload to Gitlab without leaving your R session you need the following:
+
+- a personal access token with at least `api` scope enabled.
+- `store_public_key(key = new_key, service = "gl", gitlab_url = "https://gitlab.example.com")`
 
 You can use any service (GitHub, Gitlab etc) which supports GPG by manually adding your **public** GPG key which you can get by
 
-- `gh_store_key(key = new_key)` or
+- `store_public_key(key = new_key)` or
 - `cat(gpg::gpg_export(key = new_key))`
 
 # Troubleshooting
@@ -212,4 +218,4 @@ In addition to generating a GPG keys, the following git config elements are mani
 If you want to sign commits in a git repository where you use [packrat](https://rstudio.github.io/packrat/) but you do not want to add ropsec as a dependency to your project, you can use the below, if `ropsec` is installed  on your machine:
 
 - `packrat::with_extlib(c("ropsec", "git2r", "getPass", "rstudioapi"), ropsec::sign_commits_with_key(..., global = FALSE))`
-- `packrat::with_extlib(c("ropsec", "git2r"), ropsec::gh_store_key(...))`
+- `packrat::with_extlib(c("ropsec", "git2r"), ropsec::store_public_key(...))`
