@@ -41,81 +41,103 @@
 #' # if your GitHub Personal Access Token is stored in `.Renviron` as MY_GITHUB_PAT
 #' store_public_key(key = new_key, .token = Sys.getenv('MY_GITHUB_PAT'))
 #' }
-store_public_key <- function(key, service = NULL, .token = NULL, gitlab_url = NULL, open_url = is_interactive()) {
+store_public_key <- function(key, service = NULL, .token = NULL,
+                             gitlab_url = NULL, open_url = is_interactive()) {
   pubkey <- gpg::gpg_export(key)
+  if (pubkey == "") communicate_no_key(key)
+  email_for_key <- extract_email_for_key(key)
 
-  if (pubkey == "") {
-    stop(
-      "Key of id `", key, "` is not found on local system. ",
-      "You can generate one with `sign_commits_with_key`",
-      call. = FALSE
-    )
+  if (is.null(service)) {
+    communicate_pubkey_wo_service(pubkey)
+    return(invisible(pubkey))
+  }
+  stopifnot(service %in% c("gh", "gl"))
+
+  if (is.null(.token)) {
+    .token <- Sys.getenv(ifelse(service == "gh", "GITHUB_PAT", "GITLAB_PAT"), unset = NULL)
   }
 
   if (is.null(.token)) {
-    communicate_pubkey_if_no_token(pubkey, open_url = open_url)
+    communicate_pubkey_for_manual_addition(
+      pubkey, service, gitlab_url, open_url, reason = "Token is not provided."
+    )
     return(invisible(pubkey))
   }
 
+  if (service == "gl" && is.null(gitlab_url)) {
+    communicate_pubkey_for_manual_addition(
+      pubkey, service = "gl", gitlab_url, open_url, reason = "No gitlab url provided."
+    )
+    return(invisible(pubkey))
+  }
+
+  if (service == "gh") {
+    gh_store_key(pubkey, .token, open_url, email_for_key)
+  } else {
+    gl_store_key(pubkey, .token, gitlab_url, open_url, email_for_key)
+  }
+}
+
+gh_store_key <- function(pubkey, .token, open_url, email_for_key) {
   gh_attempt <- gh_attempt_key_upload(pubkey, .token)
 
   if (inherits(gh_attempt, "try-error")) {
     if (inherits(attr(gh_attempt, "condition"), "http_error_422")) {
-      message(crayon::green(
-        clisymbols::symbol$tick, " ",
-        "Public GPG key is already stored on GitHub."
-      ))
-    } else {
-      communicate_pubkey_if_unsuccessful_upload(pubkey, open_url = open_url)
+      message(crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is already stored on GitHub."))
+    } else if (inherits(attr(gh_attempt, "condition"), "http_error_401")) {
+      communicate_pubkey_for_manual_addition(
+        pubkey, service = "gh", open_url = open_url, reason = "Unauthorized request. Check your token."
+      )
+    }
+    else {
+      communicate_pubkey_for_manual_addition(
+        pubkey, service = "gh", open_url = open_url, reason = "Unknown reason."
+      )
     }
   } else if (!gh_attempt$emails[[1]]$verified) {
-    warning(
-      crayon::red(clisymbols::symbol$warning), " ",
-      "Uploaded key is unverified. ",
-      "Is it possible that the email you used to generate the key and ",
-      "the email you use with GitHub are different? ",
-      "If so, delete the uploaded key by hand from GitHub (", crayon::underline("https://github.com/settings/keys"), ") and try again.",
-      call. = FALSE
-    )
-    if (open_url) {
-      Sys.sleep(1)
-      utils::browseURL("https://github.com/settings/keys")
-    }
+    communicate_unverified_key("gh", email_for_key, open_url)
   }
   invisible(pubkey)
 }
 
-communicate_pubkey_if_no_token <- function(pubkey, open_url) {
-  communicate_pubkey_for_manual_addition(
-    pubkey,
-    reason = "Could not add public key to GitHub as token is not provided."
-  )
-  new_url <- "https://github.com/settings/gpg/new"
-  if (open_url) {
-    Sys.sleep(1)
-    utils::browseURL(new_url)
+gl_store_key <- function(pubkey, .token, gitlab_url, open_url, email_for_key) {
+  gl_attempt <- gl_attempt_key_upload(pubkey, .token, gitlab_url)
+  status_code <- httr::status_code(gl_attempt)
+  if (status_code == 201) {
+    gl_email <- gl_user_email(gitlab_url, .token)
+    if (isTRUE(gl_email == email_for_key)) {
+      message(crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is successfully stored on Gitlab."))
+      return(invisible(pubkey))
+    } else {
+      communicate_unverified_key("gl", email_for_key, open_url, gitlab_url, gl_email)
+    }
+  } else if (status_code == 401) {
+    communicate_pubkey_for_manual_addition(
+      pubkey, service = "gl", gitlab_url, open_url = open_url, "Unauthorized request. Check your token."
+    )
+  } else if (status_code == 400) {
+    response_content <- httr::content(gl_attempt)
+    if (isTRUE(purrr::pluck(httr::content(gl_attempt), "message", "key", 1) == "has already been taken")) {
+      message(crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is already stored on Gitlab."))
+      return(invisible(pubkey))
+    }
   }
-  invisible(new_url)
+  communicate_pubkey_for_manual_addition(
+    pubkey, service = "gl", gitlab_url, open_url = open_url, "Unknown reason."
+  )
+  invisible(pubkey)
 }
 
-communicate_pubkey_if_unsuccessful_upload <- function(pubkey, open_url) {
-  communicate_pubkey_for_manual_addition(
-    pubkey,
-    reason = "Could not add public key to GitHub."
-  )
-  new_url <- "https://github.com/settings/gpg/new"
-  if (open_url) {
-    Sys.sleep(1)
-    utils::browseURL(new_url)
-  }
-  invisible(new_url)
-}
-
-communicate_pubkey_for_manual_addition <- function(pubkey, reason) {
+communicate_pubkey_for_manual_addition <- function(pubkey, service, gitlab_url = NULL,
+                                                   open_url, reason) {
   message(
     crayon::red(clisymbols::symbol$cross), " ", crayon::silver(reason)
   )
-  new_url <- "https://github.com/settings/gpg/new"
+  if (service == "gh") {
+    new_url <- "https://github.com/settings/gpg/new"
+  } else {
+    new_url <- paste0(gitlab_url, "/profile/gpg_keys")
+  }
   if (is_clipr_available()) {
     clipr::write_clip(pubkey)
     message(crayon::green(
@@ -132,7 +154,68 @@ communicate_pubkey_for_manual_addition <- function(pubkey, reason) {
     )
     cat(pubkey)
   }
+  if (open_url) {
+    Sys.sleep(1)
+    utils::browseURL(new_url)
+  }
   invisible(pubkey)
+}
+
+communicate_pubkey_wo_service <- function(pubkey) {
+  message(
+    crayon::red(clisymbols::symbol$cross), " ",
+    crayon::silver("Could not automatically upload public key as no service is provided. (`'gh'` or `'gl'` is available)")
+  )
+  if (is_clipr_available()) {
+    clipr::write_clip(pubkey)
+    message(crayon::green(
+      clisymbols::symbol$tick, "The public key is on your clipboard."
+    ))
+  } else {
+    message(
+      crayon::red(clisymbols::symbol$bullet), " ",
+      crayon::silver("The public key is the text below.\n")
+    )
+    cat(pubkey)
+  }
+  invisible(pubkey)
+}
+
+communicate_no_key <- function(key) {
+  stop(
+    "Key of id `", key, "` is not found on local system. ",
+    "You can generate one with `sign_commits_with_key`",
+    call. = FALSE
+  )
+}
+communicate_unverified_key <- function(service, email_for_key, open_url,
+                                       gitlab_url = NULL, gl_email = NULL) {
+  if (service == "gh") {
+    delete_url <- "https://github.com/settings/keys"
+  } else {
+    delete_url <- paste0(gitlab_url, "/profile/gpg_keys")
+  }
+  if (service == "gh") {
+    specific_warning_message <- paste0(
+      "Is it possible that the email you used to generate the key (`", email_for_key,
+      "`) and the email you use with GitHub are different? "
+    )
+  } else {
+    specific_warning_message <- paste0(
+      "the email you used to generate the key (`", email_for_key,
+      "`) and the email you use with Gitlab (`", gl_email, "`) are different."
+    )
+  }
+  warning(
+    crayon::red(clisymbols::symbol$warning), " Uploaded key is unverified. ",
+    "Delete the uploaded key by hand (", crayon::underline(delete_url), ") and try again.",
+    call. = FALSE
+  )
+  if (open_url) {
+    Sys.sleep(1)
+    utils::browseURL(delete_url)
+  }
+  invisible(delete_url)
 }
 
 gh_attempt_key_upload <- function(pubkey, .token) {
@@ -140,4 +223,32 @@ gh_attempt_key_upload <- function(pubkey, .token) {
     gh::gh("POST /user/gpg_keys", armored_public_key = pubkey, .token = .token),
     silent = TRUE
   )
+}
+
+gl_attempt_key_upload <- function(pubkey, .token, gitlab_url) {
+  httr::POST(
+    url = paste0(gitlab_url, "/api/v4/user/gpg_keys"),
+    config = httr::add_headers(
+      "PRIVATE-TOKEN" = .token,
+      "Content-Type" = "application/json"
+    ),
+    body = jsonlite::toJSON(list("key" = pubkey), auto_unbox = TRUE),
+    encode = "json"
+  )
+}
+
+gl_user_email <- function(url, .token) {
+  user <- httr::GET(
+    url = paste0(url, "/api/v4/user"),
+    config = httr::add_headers(
+      "PRIVATE-TOKEN" = .token,
+      "Content-Type" = "application/json"
+    )
+  )
+  if (httr::status_code(user) == 200) {
+    httr::content(user)$email
+  } else {
+    warning("Could not fetch user email from gitlab API, status code:", httr::status_code(user))
+    NA
+  }
 }

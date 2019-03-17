@@ -28,7 +28,9 @@ Suggests:
     rmarkdown,
     pkgdown,
     gh,
-    httr
+    httr,
+    purrr,
+    jsonlite
 Depends:
     R (>= 3.2.0)
 Imports:
