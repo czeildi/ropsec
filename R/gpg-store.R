@@ -54,10 +54,10 @@ store_public_key <- function(key, service = NULL, .token = NULL,
   stopifnot(service %in% c("gh", "gl"))
 
   if (is.null(.token)) {
-    .token <- Sys.getenv(ifelse(service == "gh", "GITHUB_PAT", "GITLAB_PAT"), unset = NULL)
+    .token <- Sys.getenv(ifelse(service == "gh", "GITHUB_PAT", "GITLAB_PAT"), unset = "")
   }
 
-  if (is.null(.token)) {
+  if (.token == "") {
     communicate_pubkey_for_manual_addition(
       pubkey, service, gitlab_url, open_url, reason = "Token is not provided."
     )

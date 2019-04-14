@@ -18,7 +18,7 @@ describe("store_public_key", {
     })
     it("if token is not provided directly or in env var, public key returned with message", {
       mockery::stub(store_public_key, "gpg::gpg_export", "public_key_block")
-      mockery::stub(store_public_key, "Sys.getenv", NULL)
+      mockery::stub(store_public_key, "Sys.getenv", "")
       expect_message(
         store_public_key("ABCD", service = "gh"),
         "Token is not provided."
