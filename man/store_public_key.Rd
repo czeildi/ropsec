@@ -45,9 +45,9 @@ or \href{https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html}{gi
 \examples{
 \dontrun{
 new_key <- sign_commits_with_key("John Doe", "johndoe@example.com")
-# if you do not have personal access token for github
+# if you do not have personal access token for github or gitlab
 store_public_key(key = new_key)
 # if your GitHub Personal Access Token is stored in `.Renviron` as MY_GITHUB_PAT
-store_public_key(key = new_key, .token = Sys.getenv('MY_GITHUB_PAT'))
+store_public_key(key = new_key, service = "gh", .token = Sys.getenv('MY_GITHUB_PAT'))
 }
 }

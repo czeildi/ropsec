@@ -36,10 +36,10 @@
 #' @examples
 #' \dontrun{
 #' new_key <- sign_commits_with_key("John Doe", "johndoe@example.com")
-#' # if you do not have personal access token for github
+#' # if you do not have personal access token for github or gitlab
 #' store_public_key(key = new_key)
 #' # if your GitHub Personal Access Token is stored in `.Renviron` as MY_GITHUB_PAT
-#' store_public_key(key = new_key, .token = Sys.getenv('MY_GITHUB_PAT'))
+#' store_public_key(key = new_key, service = "gh", .token = Sys.getenv('MY_GITHUB_PAT'))
 #' }
 store_public_key <- function(key, service = NULL, .token = NULL,
                              gitlab_url = NULL, open_url = is_interactive()) {

@@ -197,7 +197,7 @@ communicate_needed_key_upload <- function(key) {
       "The next step is uploading the public key",
       "to GitHub or alternative (unless it is already uploaded),",
       " which you can do by passing",
-      "the return value (\"" %+% key %+% "\") to `gh_store_key`."
+      "the return value (\"" %+% key %+% "\") to `store_public_key`."
     )
   )
 }
