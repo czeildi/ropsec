@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>GPG sign all git commits and/or retrieve ID of existing key — sign_commits_with_key • ropsec</title>
+<title>Add a public key to your GitHub or gitlab or other account — store_public_key • ropsec</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,12 +30,11 @@
 
 
 
-<meta property="og:title" content="GPG sign all git commits and/or retrieve ID of existing key — sign_commits_with_key" />
+<meta property="og:title" content="Add a public key to your GitHub or gitlab or other account — store_public_key" />
 
-<meta property="og:description" content="Configure git to sign all commits using GPG. If no existing key is provided
-or found, sign_commits_with_key() will create a new key and use it for
-signing. This function is suitable only for interactive use, before changing
-the user's git config it will always ask for confirmation." />
+<meta property="og:description" content="store_public_key() adds the public key associated with a key ID to your
+GitHub or Gitlab account if token is available. Otherwise it will print the
+public key for you to copy manually into GitHub/Gitlab or elsewhere." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -117,81 +116,75 @@ the user's git config it will always ask for confirmation." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>GPG sign all git commits and/or retrieve ID of existing key</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropenscilabs/ropsec/blob/master/R/gpg-sign-commits.R'><code>R/gpg-sign-commits.R</code></a></small>
-    <div class="hidden name"><code>sign_commits_with_key.Rd</code></div>
+    <h1>Add a public key to your GitHub or gitlab or other account</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ropenscilabs/ropsec/blob/master/R/gpg-store.R'><code>R/gpg-store.R</code></a></small>
+    <div class="hidden name"><code>store_public_key.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Configure git to sign all commits using GPG. If no existing key is provided
-or found, <code>sign_commits_with_key()</code> will create a new key and use it for
-signing. This function is suitable only for interactive use, before changing
-the user's git config it will always ask for confirmation.</p>
+    <p><code>store_public_key()</code> adds the public key associated with a key ID to your
+GitHub or Gitlab account if token is available. Otherwise it will print the
+public key for you to copy manually into GitHub/Gitlab or elsewhere.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>sign_commits_with_key</span>(<span class='no'>name</span>, <span class='no'>email</span>, <span class='kw'>key</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>global</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>store_public_key</span>(<span class='no'>key</span>, <span class='kw'>service</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>.token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>gitlab_url</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>open_url</span> <span class='kw'>=</span> <span class='fu'>is_interactive</span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>name</th>
-      <td><p>A character string containing your name. If not provided,
-<code>sign_commits_with_key()</code> will look first in your local then in your global
-git configuration.</p></td>
-    </tr>
-    <tr>
-      <th>email</th>
-      <td><p>A character string containing your email address. If not
-provided, <code>sign_commits_with_key()</code> will look first in your local then in
-your global git configuration. The email address must be identical to the
-one you use with the corresponding repository management service (i.e.
-GitHub, etc).</p></td>
-    </tr>
-    <tr>
       <th>key</th>
-      <td><p>A character string containing the ID of a pre-existing key to use.
-If <code>NULL</code> and key cannot be found based on name and email unambiguously, a
-new key will be created.</p></td>
+      <td><p>A character string containing the ID of a key to use, use the
+return value of <code>sign_commits_with_key()</code>. If you are not sure, what key
+you want to use, you can list your locally available keys with
+<code><a href='https://www.rdocumentation.org/packages/gpg/topics/gpg_keys'>gpg::gpg_list_keys()</a></code>. The email address corresponding to this key must be
+identical to the email address that you use with GitHub/Gitlab etc.</p></td>
     </tr>
     <tr>
-      <th>global</th>
-      <td><p>boolean, set commit signing in global or local (repository) git
-config.</p></td>
+      <th>service</th>
+      <td><p>NULL currently supported services: <code>"gh"</code> for GitHub (access
+token is necessary) or <code>"gl"</code> for gitlab (url and access token is
+necessary). If left NULL, no upload is attempted, public key is returned
+for manual upload.</p></td>
+    </tr>
+    <tr>
+      <th>.token</th>
+      <td><p>Either GitHub Personal Access Token with at least
+<code>write:gpg_key</code> scope enabled. You can grant access to tokens
+<a href='https://github.com/settings/tokens'>here</a>. Supply this with <code>service = "gh"</code>. Or Gitlab personal access token with at least <code>api</code> scope enabled.
+Supply this with <code>service = "gl"</code>. If your PAT is stored in an environment
+variable <code>GITHUB_PAT</code> (for <code>service = "gh"</code>) or <code>GITLAB_PAT</code> (for <code>service = "gl"</code>) you do not need to supply the token manually.</p></td>
+    </tr>
+    <tr>
+      <th>gitlab_url</th>
+      <td><p>NULL by default, or your gitlab url for <code>service = "gl"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>open_url</th>
+      <td><p>logical, whether open relevant URLs automatically.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A character string containing the ID of the key that was provided or
-generated.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>In case of already existing key(s) for convenience an appropriate key will be
-identified based on the provided name and/or email, or git config. This is
-especially handy if you have multiple email addresses used with git and thus
-would like to set-up commit signing on a per-repository basis. In this case
-supply the email and set the global param to <code>FALSE</code>. If you accidentally set
-that all commits should be signed you can revert this by deleting the
-<code>commit.gpgsign</code> and <code>user.signingkey</code> git options.</p>
+    <p>If you do not have a Personal Access Token set up or you want to store your
+key on other service you can either call this function without a token and
+then add the printed public key manually or call <code>cat(</code><code><a href='https://www.rdocumentation.org/packages/gpg/topics/gpg_keys'>gpg::gpg_export()</a></code><code>)</code>
+with <code>newkey</code> and add the returned public key manually. For more information
+see <a href='https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/'>GitHub tokens</a>
+or <a href='https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html'>gitlab tokens</a>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='co'># generate key and use newly generated key</span>
-<span class='no'>newkey</span> <span class='kw'>&lt;-</span> <span class='fu'>sign_commits_with_key</span>(<span class='st'>"John Doe"</span>, <span class='st'>"johndoe@example.com"</span>)
-
-<span class='co'># use existing key by explicitly providing it</span>
-<span class='fu'>sign_commits_with_key</span>(<span class='kw'>key</span> <span class='kw'>=</span> <span class='st'>"test_key"</span>)
-
-<span class='co'># use existing key based on email match</span>
-<span class='fu'>sign_commits_with_key</span>(<span class='kw'>email</span> <span class='kw'>=</span> <span class='st'>"johndoe@example.com"</span>)
-
-<span class='co'># set key to sign commits only in current repository</span>
-<span class='fu'>sign_commits_with_key</span>(<span class='kw'>key</span> <span class='kw'>=</span> <span class='st'>"test_key"</span>, <span class='kw'>global</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>new_key</span> <span class='kw'>&lt;-</span> <span class='fu'>sign_commits_with_key</span>(<span class='st'>"John Doe"</span>, <span class='st'>"johndoe@example.com"</span>)
+<span class='co'># if you do not have personal access token for github or gitlab</span>
+<span class='fu'>store_public_key</span>(<span class='kw'>key</span> <span class='kw'>=</span> <span class='no'>new_key</span>)
+<span class='co'># if your GitHub Personal Access Token is stored in `.Renviron` as MY_GITHUB_PAT</span>
+<span class='fu'>store_public_key</span>(<span class='kw'>key</span> <span class='kw'>=</span> <span class='no'>new_key</span>, <span class='kw'>service</span> <span class='kw'>=</span> <span class='st'>"gh"</span>, <span class='kw'>.token</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.getenv'>Sys.getenv</a></span>(<span class='st'>'MY_GITHUB_PAT'</span>))
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -199,8 +192,6 @@ that all commits should be signed you can revert this by deleting the
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
