@@ -18,7 +18,7 @@ describe("sign_commits_with_key", {
 describe("generate_key_with_name_and_email", {
   it("calls safe getPass to retrieve password", {
     mockery::stub(generate_key_with_name_and_email, "utils::askYesNo", TRUE)
-    getPassMock <- mockery::mock("")
+    getPassMock <- mockery::mock("pwd")
     mockery::stub(generate_key_with_name_and_email, "getPass::getPass", getPassMock)
     mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", "")
     generate_key_with_name_and_email("John Doe", "jd@example.com")
@@ -40,15 +40,14 @@ describe("generate_key_with_name_and_email", {
     )
   })
 
-  it("uses NULL if no password in terminal", {
+  it("error if conflicting password preferences", {
     mockery::stub(generate_key_with_name_and_email, "utils::askYesNo", TRUE)
     mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
     keygen_mock <- mockery::mock("id")
     mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", keygen_mock)
-    generate_key_with_name_and_email("John Doe", "jd@example.com")
-    mockery::expect_args(
-      keygen_mock, 1,
-      name = "John Doe", email = "jd@example.com", passphrase = NULL
+    expect_error(
+      generate_key_with_name_and_email("John Doe", "jd@example.com"),
+      "Either provide a non-empty password or start again and opt for no password protection."
     )
   })
 
@@ -65,7 +64,7 @@ describe("generate_key_with_name_and_email", {
 
   it("messages used name and email", {
     mockery::stub(generate_key_with_name_and_email, "utils::askYesNo", TRUE)
-    mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
+    mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "pwd")
     mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", "id")
     expect_message(
       generate_key_with_name_and_email("John Doe", "jd@example.com"),
@@ -75,7 +74,7 @@ describe("generate_key_with_name_and_email", {
 
   it("messages based on source of param", {
     mockery::stub(generate_key_with_name_and_email, "utils::askYesNo", TRUE)
-    mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "")
+    mockery::stub(generate_key_with_name_and_email, "getPass::getPass", "pwd")
     mockery::stub(generate_key_with_name_and_email, "generate_key_with_checked_params", "id")
     name <- "John Doe"
     attr(name, "local") <- TRUE

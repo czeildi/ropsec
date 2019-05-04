@@ -33,11 +33,19 @@ Having verified commits has two components:
 If you are interested in the background, 
 [general info on GPG](https://cran.r-project.org/web/packages/gpg/vignettes/intro.html) is highly recommended.
 
+During the process of creating a private key you will have the option to add password protection. It is strongly recommended to do so otherwise someone having access to your computer will immediately have access to your private key as well. ([Reference](https://www.gnupg.org/gph/en/manual/c481.html).)
+
 # How to sign commits
 
 1. Install system dependencies ([GPG Installation instructions](https://github.com/jeroen/gpg#installation))
     - OSX: `brew install gnupg` (check if installed with `gpg --version`)
-    - Linux: `apt-get install gnupg` (check if installed with `gpg --version`)
+        - for password management from Rstudio
+          - `brew install pinentry-mac`
+          - `echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf`
+          - `gpgconf --kill gpg-agent` to make sure it will reload configuration
+    - Linux (Debian/Ubuntu): 
+      - `apt install gnupg` (check if installed with `gpg --version`)
+      - `apt install libgpgme-dev` (to be able to install `gpg` R package which is a dependency of `ropsec`)
 2. install ropsec: `devtools::install_github("ropenscilabs/ropsec")`
 3. generate private - public keypair and set it to sign commits
     - [one email used with git](#single)
@@ -187,15 +195,19 @@ You can use any service (GitHub, Gitlab etc) which supports GPG by manually addi
 If you do not want to sign commits or there is some issue and you cannot even commit, the easiest solution is setting  `commit.gpgsign` in the git config to `false`. You can do it by running one of the following commands in your terminal:
 
 - in specific repository: `git config commit.gpgsign false`
-- globally: `git config commit.gpgsign false`
+- globally: `git config --global commit.gpgsign false`
+
+## Check
+
+- `git verify-commit HEAD` or `git log --show-signature`
+- signing plaintext: `echo "test" | gpg --clearsign`
+- commit from command line and not Rstudio or another GUI
 
 ## Attempt to fix
 
 - check that `git config gpg.program` matches your installed version
-- based on [this](https://unix.stackexchange.com/questions/382279/gpg-hangs-when-private-keys-are-accessed) post:
-  - `pkill -9 gpg-agent`
-  - set env var: `GPG_TTY=$(tty)` (with `export GPG_TTY=$(tty)` in `~/.bashrc` or similar)
-  - commit from command line first and provide passphrase of GPG key
+- set env var: `GPG_TTY=$(tty)` (with `echo "export GPG_TTY=$(tty)" >> ~/.bashrc ` or similar), then `gpgconf --kill gpg-agent` to make sure it will reload configuration
+- `echo 'no-tty' >> ~/.gnupg/gpg.conf`, then `gpgconf --kill gpg-agent` to make sure it will reload configuration
 
 # Further details
 
@@ -213,9 +225,7 @@ In addition to generating a GPG keys, the following git config elements are mani
 - `user.name` (read-only)
 - `user.signingkey`
 
-## usage alongside packrat
+## Password remembering
 
-If you want to sign commits in a git repository where you use [packrat](https://rstudio.github.io/packrat/) but you do not want to add ropsec as a dependency to your project, you can use the below, if `ropsec` is installed  on your machine:
-
-- `packrat::with_extlib(c("ropsec", "git2r", "getPass", "rstudioapi"), ropsec::sign_commits_with_key(..., global = FALSE))`
-- `packrat::with_extlib(c("ropsec", "git2r"), ropsec::store_public_key(...))`
+- keychain: if you opt for this option, keychain can remember your password forever.
+- gpg agent: remembers password until the process is alive or password cache ttl expires. (Relevant options: -max-cache-ttl (2 hours by default) and --default-cache-ttl (10 minutes by default). [Reference](https://www.gnupg.org/documentation/manuals/gnupg/Agent-Options.html).)
