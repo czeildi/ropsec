@@ -40,12 +40,12 @@ During the process of creating a private key you will have the option to add pas
 1. Install system dependencies ([GPG Installation instructions](https://github.com/jeroen/gpg#installation))
     - OSX: `brew install gnupg` (check if installed with `gpg --version`)
         - for password management from Rstudio
-          - `brew install pinentry-mac`
-          - `echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf`
-          - `gpgconf --kill gpg-agent` to make sure it will reload configuration
+            - `brew install pinentry-mac`
+            - `echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf`
+            - `gpgconf --kill gpg-agent` to make sure it will reload configuration
     - Linux (Debian/Ubuntu): 
-      - `apt install gnupg` (check if installed with `gpg --version`)
-      - `apt install libgpgme-dev` (to be able to install `gpg` R package which is a dependency of `ropsec`)
+        - `apt install gnupg` (check if installed with `gpg --version`)
+        - `apt install libgpgme-dev` (to be able to install `gpg` R package which is a dependency of `ropsec`)
 2. install ropsec: `devtools::install_github("ropenscilabs/ropsec")`
 3. generate private - public keypair and set it to sign commits
     - [one email used with git](#single)

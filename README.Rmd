@@ -39,7 +39,7 @@ devtools::install_github("ropenscilabs/ropsec", build_vignettes = TRUE)
 
 ## Usage
 
-```{r message=FALSE, warning=FALSE, error=FALSE}
+```{r eval=FALSE}
 library(ropsec)
 ```
 
