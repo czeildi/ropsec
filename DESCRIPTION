@@ -32,7 +32,7 @@ Suggests:
     purrr,
     jsonlite
 Depends:
-    R (>= 3.2.0)
+    R (>= 3.4.0)
 Imports:
     git2r,
     gpg,

@@ -11,7 +11,7 @@ generate_key_with_name_and_email <- function(name, email) {
     "`", email, "`", communicate_source_of_param(email), "\n",
     "will be used to generate a new gpg key."
   )
-  password_wanted <- utils::askYesNo(
+  password_wanted <- ask_yes_no(
     "Do you want to protect your new gpg key with a password? Password protection is strongly recommended unless you are only testing."
   )
   if (is.na(password_wanted)) {
@@ -62,4 +62,13 @@ generate_key_with_checked_params <- function(name, email, passphrase) {
     )
   )
   key
+}
+
+
+ask_yes_no <- function(question) {
+  if (!interactive()) {
+    stop("User input required in non-interactive session.\n", call. = FALSE)
+  }
+  choices <- c("Yes" = TRUE, "no" = FALSE, "cancel" = NA)
+  unname(choices[utils::menu(names(choices), title = question)])
 }
