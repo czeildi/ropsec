@@ -1,5 +1,5 @@
 * extend `gh_store_key()` and rename to `store_public_key()`
-* improve documentation
+* improve documentation: installation, gpg password, etc
 
 # 0.2.0
 

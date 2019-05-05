@@ -1,8 +1,8 @@
 #' Add a public key to your GitHub or gitlab or other account
 #'
 #' `store_public_key()` adds the public key associated with a key ID to your
-#' GitHub or Gitlab account if token is available. Otherwise it will print the
-#' public key for you to copy manually into GitHub/Gitlab or elsewhere.
+#' GitHub or Gitlab account if token is available. Otherwise it will put the
+#' public key on your clipboard for you to copy manually into GitHub/Gitlab or elsewhere.
 #'
 #' If you do not have a Personal Access Token set up or you want to store your
 #' key on other service you can either call this function without a token and
@@ -14,23 +14,23 @@
 #' tokens](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html).
 #'
 #' @param key A character string containing the ID of a key to use, use the
-#'   return value of [`sign_commits_with_key()`]. If you are not sure, what key
+#'   return value of [`sign_commits_with_key()`]. If you are not sure what key
 #'   you want to use, you can list your locally available keys with
 #'   [gpg::gpg_list_keys()]. The email address corresponding to this key must be
 #'   identical to the email address that you use with GitHub/Gitlab etc.
-#' @param service NULL currently supported services: `"gh"` for GitHub (access
+#' @param service `NULL` by default. Currently supported services: `"gh"` for GitHub (access
 #'   token is necessary) or `"gl"` for gitlab (url and access token is
-#'   necessary). If left NULL, no upload is attempted, public key is returned
+#'   necessary). If left `NULL`, no upload is attempted, public key is returned
 #'   for manual upload.
 #' @param .token Either GitHub Personal Access Token with at least
 #'   `write:gpg_key` scope enabled. You can grant access to tokens
-#'   [here](https://github.com/settings/tokens). Supply this with `service =
-#'   "gh"`. Or Gitlab personal access token with at least `api` scope enabled.
+#'   [here](https://github.com/settings/tokens). Supply this with `service = "gh"`.
+#'   Or Gitlab personal access token with at least `api` scope enabled.
 #'   Supply this with `service = "gl"`. If your PAT is stored in an environment
 #'   variable `GITHUB_PAT` (for `service = "gh"`) or `GITLAB_PAT` (for `service
 #'   = "gl"`) you do not need to supply the token manually.
-#' @param gitlab_url NULL by default, or your gitlab url for `service = "gl"`.
-#' @param open_url logical, whether open relevant URLs automatically.
+#' @param gitlab_url `NULL by default`, or your gitlab url for `service = "gl"`.
+#' @param open_url logical, whether to open relevant URLs automatically.
 #' @export
 #'
 #' @examples
@@ -40,6 +40,8 @@
 #' store_public_key(key = new_key)
 #' # if your GitHub Personal Access Token is stored in `.Renviron` as MY_GITHUB_PAT
 #' store_public_key(key = new_key, service = "gh", .token = Sys.getenv('MY_GITHUB_PAT'))
+#' # if you have a gitlab server at https://gitlab.example.com
+#' store_public_key(key = new_key, service = "gl", gitlab_url = "https://gitlab.example.com")
 #' }
 store_public_key <- function(key, service = NULL, .token = NULL,
                              gitlab_url = NULL, open_url = is_interactive()) {

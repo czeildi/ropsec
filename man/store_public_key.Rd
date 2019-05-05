@@ -9,30 +9,31 @@ store_public_key(key, service = NULL, .token = NULL,
 }
 \arguments{
 \item{key}{A character string containing the ID of a key to use, use the
-return value of \code{\link[=sign_commits_with_key]{sign_commits_with_key()}}. If you are not sure, what key
+return value of \code{\link[=sign_commits_with_key]{sign_commits_with_key()}}. If you are not sure what key
 you want to use, you can list your locally available keys with
 \code{\link[gpg:gpg_list_keys]{gpg::gpg_list_keys()}}. The email address corresponding to this key must be
 identical to the email address that you use with GitHub/Gitlab etc.}
 
-\item{service}{NULL currently supported services: \code{"gh"} for GitHub (access
+\item{service}{\code{NULL} by default. Currently supported services: \code{"gh"} for GitHub (access
 token is necessary) or \code{"gl"} for gitlab (url and access token is
-necessary). If left NULL, no upload is attempted, public key is returned
+necessary). If left \code{NULL}, no upload is attempted, public key is returned
 for manual upload.}
 
 \item{.token}{Either GitHub Personal Access Token with at least
 \code{write:gpg_key} scope enabled. You can grant access to tokens
-\href{https://github.com/settings/tokens}{here}. Supply this with \code{service = "gh"}. Or Gitlab personal access token with at least \code{api} scope enabled.
+\href{https://github.com/settings/tokens}{here}. Supply this with \code{service = "gh"}.
+Or Gitlab personal access token with at least \code{api} scope enabled.
 Supply this with \code{service = "gl"}. If your PAT is stored in an environment
 variable \code{GITHUB_PAT} (for \code{service = "gh"}) or \code{GITLAB_PAT} (for \code{service = "gl"}) you do not need to supply the token manually.}
 
-\item{gitlab_url}{NULL by default, or your gitlab url for \code{service = "gl"}.}
+\item{gitlab_url}{\code{NULL by default}, or your gitlab url for \code{service = "gl"}.}
 
-\item{open_url}{logical, whether open relevant URLs automatically.}
+\item{open_url}{logical, whether to open relevant URLs automatically.}
 }
 \description{
 \code{store_public_key()} adds the public key associated with a key ID to your
-GitHub or Gitlab account if token is available. Otherwise it will print the
-public key for you to copy manually into GitHub/Gitlab or elsewhere.
+GitHub or Gitlab account if token is available. Otherwise it will put the
+public key on your clipboard for you to copy manually into GitHub/Gitlab or elsewhere.
 }
 \details{
 If you do not have a Personal Access Token set up or you want to store your
@@ -49,5 +50,7 @@ new_key <- sign_commits_with_key("John Doe", "johndoe@example.com")
 store_public_key(key = new_key)
 # if your GitHub Personal Access Token is stored in `.Renviron` as MY_GITHUB_PAT
 store_public_key(key = new_key, service = "gh", .token = Sys.getenv('MY_GITHUB_PAT'))
+# if you have a gitlab server at https://gitlab.example.com
+store_public_key(key = new_key, service = "gl", gitlab_url = "https://gitlab.example.com")
 }
 }

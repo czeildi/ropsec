@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
+![](./assets/global_1.gif)
 
 # Background
 
@@ -65,16 +66,27 @@ new_key <- sign_commits_with_key(
 ```
 
 ```{r echo = FALSE}
-message("`John Doe` (as provided) and
+cat('John Doe` (as provided) and
 `johndoe@example.com` (as provided)
-will be used to generate a new gpg key.")
-cat("Please enter password for new gpg key: ********\n")
-cat("Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
+will be used to generate a new gpg key.
+Do you want to protect your new gpg key with a password? Password protection is strongly recommended unless you are only testing.
 
 1: Yes
-2: Not now
-3: Absolutely not
-Selection: 1")
+2: no
+3: cancel
+
+Selection: 1
+Please enter password for new gpg key, to cancel press `Cancel` in Rstudio or `Ctrl + c` in terminal: ********
+✔ Key with id `D21F047BDE943F74` successfully generated.
+Do you want to sign future commits with `D21F047BDE943F74` in all repositories?
+
+1: Absolutely not
+2: Yes
+3: Not now
+
+Selection: 2
+● The next step is uploading the public key to GitHub or alternative (unless it is already uploaded),  which you can do by passing the return value ("D21F047BDE943F74") to `store_public_key`.
+[1] "D21F047BDE943F74"')
 ```
 
 Next step: [upload your public key](#upload_key) to GitHub/Gitlab/etc.
@@ -124,17 +136,12 @@ sign_commits_with_key(global = FALSE)
 ```
 
 ```{r echo=FALSE}
-cat("Existing key found: 1234561234561234.
-Corresponding email: jd@company.com (based on local git config).
+cat('✔ Existing key found: `D21F047BDE943F74`.
+Corresponding email: `johndoe@example.com` (based on global git config).
 
-Do you want to sign all future commits with `1234561234561234` in this repository?
-
-1: Yes
-2: Absolutely not
-3: Not now
-
-Selection: 1")
-"1234561234561234"
+✔ Everything is already set on your local machine for signing commits.
+● The next step is uploading the public key to GitHub or alternative (unless it is already uploaded),  which you can do by passing the return value ("D21F047BDE943F74") to `store_public_key`.
+[1] "D21F047BDE943F74"')
 ```
 
 You may choose to set one of them globally which thus will be the default key to use in a repository where the repository level configs are not set to a different value.
@@ -147,24 +154,6 @@ You may choose to set one of them globally which thus will be the default key to
 
 ```{r eval=FALSE}
 sign_commits_with_key(key = "ABCDEFGHIJKLMNOP")
-```
-
-### find based on user name and/or email
-
-```{r eval=FALSE}
-sign_commits_with_key(name = "John Doe")
-```
-
-```{r echo=FALSE}
-message("Existing key found: ABCDEFGHIJKLMNOP.
-Corresponding email: johndoe@example.com (based on local git config).
-
-Do you want to sign all future commits with `ABCDEFGHIJKLMNOP` in all repositories?
-...")
-```
-
-```{r eval=FALSE}
-sign_commits_with_key(email = "johndoe@example.com")
 ```
 
 # Upload your public key to repository management services {#upload_key}
