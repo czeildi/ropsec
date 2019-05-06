@@ -85,7 +85,10 @@ gh_store_key <- function(pubkey, .token, open_url, email_for_key) {
 
   if (inherits(gh_attempt, "try-error")) {
     if (inherits(attr(gh_attempt, "condition"), "http_error_422")) {
-      message(crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is already stored on GitHub."))
+      message(
+        crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is already stored on GitHub.\n"),
+        crayon::silver("You can double-check at", crayon::underline("https://github.com/settings/keys"), ".")
+      )
     } else if (inherits(attr(gh_attempt, "condition"), "http_error_401")) {
       communicate_pubkey_for_manual_addition(
         pubkey, service = "gh", open_url = open_url, reason = "Unauthorized request. Check your token."
@@ -98,6 +101,11 @@ gh_store_key <- function(pubkey, .token, open_url, email_for_key) {
     }
   } else if (!gh_attempt$emails[[1]]$verified) {
     communicate_unverified_key("gh", email_for_key, open_url)
+  } else {
+    message(
+      crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is uploaded to GitHub.\n"),
+      crayon::silver("You can double-check at", crayon::underline("https://github.com/settings/keys"), ".")
+    )
   }
   invisible(pubkey)
 }
@@ -108,7 +116,10 @@ gl_store_key <- function(pubkey, .token, gitlab_url, open_url, email_for_key) {
   if (status_code == 201) {
     gl_email <- gl_user_email(gitlab_url, .token)
     if (isTRUE(gl_email == email_for_key)) {
-      message(crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is successfully stored on Gitlab."))
+      message(
+        crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is successfully stored on Gitlab.\n"),
+        crayon::silver("You can double-check at", crayon::underline(paste0(gitlab_url, "/profile/gpg_keys")), ".")
+      )
       return(invisible(pubkey))
     } else {
       communicate_unverified_key("gl", email_for_key, open_url, gitlab_url, gl_email)
@@ -120,7 +131,10 @@ gl_store_key <- function(pubkey, .token, gitlab_url, open_url, email_for_key) {
   } else if (status_code == 400) {
     response_content <- httr::content(gl_attempt)
     if (isTRUE(purrr::pluck(httr::content(gl_attempt), "message", "key", 1) == "has already been taken")) {
-      message(crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is already stored on Gitlab."))
+      message(
+        crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is already stored on Gitlab.\n"),
+        crayon::silver("You can double-check at", crayon::underline(paste0(gitlab_url, "/profile/gpg_keys")), ".")
+      )
       return(invisible(pubkey))
     }
   }
