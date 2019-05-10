@@ -39,7 +39,7 @@ During the process of creating a private key you will have the option to add pas
 # How to sign commits
 
 1. Install system dependencies ([GPG Installation instructions](https://github.com/jeroen/gpg#installation))
-    - OSX: `brew install gnupg` (check if already installed with `gpg --version`)
+    - macOS: `brew install gnupg` (check if already installed with `gpg --version`)
         - for password management from Rstudio
             - `brew install pinentry-mac`
             - `echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf`
