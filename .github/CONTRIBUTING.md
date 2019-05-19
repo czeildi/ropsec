@@ -1,8 +1,8 @@
-# Contributing to ropsec
+# CONTRIBUTING #
 
-This outlines how to propose a change to ropsec. For more detailed
-info about contributing to this, and other tidyverse packages, please see the
-[**development contributing guide**](https://rstd.io/tidy-contrib).
+You want to contribute to `ropsec`? Great!
+
+For context, be aware that some parts are clearer in the head of package maintainers (e.g. commit signing related functionality), while other parts, functionalities are closer to vague ideas (e.g. summarizing system checks). This means that potential contributing is not only about fixing bugs and implementing planned features but also figuring out what functionality would be useful, how to organise it into functions, creating solvable issues, etc.
 
 ### Fixing typos
 
@@ -16,24 +16,22 @@ the GitHub web interface, so long as the changes are made in the _source_ file.
 
 Before you make a substantial pull request, you should always file an issue and
 make sure someone from the team agrees that it’s a problem. If you’ve found a
-bug, create an associated issue and illustrate the bug with a minimal 
+bug, create an associated issue and illustrate the bug with a minimal
 [reprex](https://www.tidyverse.org/help/#reprex).
 
 ### Pull request process
 
-*  We recommend that you create a Git branch for each pull request (PR).  
+*  We recommend that you create a Git branch for each pull request (PR).
 *  Look at the Travis and AppVeyor build status before and after making changes.
 The `README` should contain badges for any continuous integration services used
-by the package.  
-*  New code should follow the tidyverse [style guide](http://style.tidyverse.org).
+by the package.
+*  We recommend the tidyverse [style guide](http://style.tidyverse.org).
 You can use the [styler](https://CRAN.R-project.org/package=styler) package to
-apply these styles, but please don't restyle code that has nothing to do with 
-your PR.  
-*  We use [roxygen2](https://cran.r-project.org/package=roxygen2), with
-[Markdown syntax](https://cran.r-project.org/web/packages/roxygen2/vignettes/markdown.html), 
-for documentation.  
+apply these styles, but please don't restyle code that has nothing to do with
+your PR.
+*  We use [roxygen2](https://cran.r-project.org/package=roxygen2).
 *  We use [testthat](https://cran.r-project.org/package=testthat). Contributions
-with test cases included are easier to accept.  
+with test cases included are easier to accept.
 *  For user-facing changes, add a bullet to the top of `NEWS.md` below the
 current development version header describing the changes made followed by your
 GitHub username, and links to relevant issue(s)/PR(s).
@@ -44,5 +42,22 @@ Please note that the ropsec project is released with a
 [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this
 project you agree to abide by its terms.
 
-### See tidyverse [development contributing guide](https://rstd.io/tidy-contrib)
+### See rOpenSci [contributing guide](https://ropensci.github.io/dev_guide/contributingguide.html)
 for further details.
+
+### Discussion forum
+
+Check out our [discussion forum](https://discuss.ropensci.org) if
+
+* you have a question, an use case, or otherwise not a bug or feature request for the software itself.
+* you think your issue requires a longer form discussion.
+
+### Prefer to Email?
+
+Email the person listed as maintainer in the `DESCRIPTION` file of this repo.
+
+Though note that private discussions over email don't help others - of course email is totally warranted if it's a sensitive problem of any kind.
+
+### Thanks for contributing!
+
+This contributing guide is adapted from the tidyverse contributing guide available at https://raw.githubusercontent.com/r-lib/usethis/master/inst/templates/tidy-contributing.md
