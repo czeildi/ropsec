@@ -64,7 +64,7 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
   } else if (nrow(key_candidates) == 1L) {
     key <- key_candidates$id
     message(
-      crayon::green(clisymbols::symbol$tick), " ",
+      crayon::green(cli::symbol$tick), " ",
       crayon::silver(
         "Existing key found: `" %+% key %+% "`.\n" %+%
         "Corresponding email: `" %+% email %+% "`" %+% communicate_source_of_param(email) %+% ".\n"
@@ -80,7 +80,7 @@ sign_commits_with_key <- function(name, email, key = NULL, global = TRUE) {
 set_key_to_sign_commits <- function(key, global) {
   if (is_commit_signing_already_set(key, global)) {
     message(
-      crayon::green(clisymbols::symbol$tick), " ",
+      crayon::green(cli::symbol$tick), " ",
       crayon::silver(
         "Everything is already set on your local machine for signing commits."
       )
@@ -136,7 +136,7 @@ filter_keys_on_name_and_email_if_provided <- function(keys, user_name, user_emai
 stop_due_to_multiple_keys <- function(key_candidates) {
   stop(
     paste0(utils::capture.output(key_candidates), collapse = "\n"), "\n",
-    crayon::red(clisymbols::symbol$cross), " ",
+    crayon::red(cli::symbol$cross), " ",
     "There are multiple keys,\n",
     "you must disambiguate with providing the key param or ",
     "deleting the keys you do not want to use.",
@@ -181,7 +181,7 @@ assemble_confirmation_message <- function(key, global) {
     ifelse(
       original_git_user_email != new_git_user_email,
       paste0(
-        crayon::red(clisymbols::symbol$warning), " ",
+        crayon::red(cli::symbol$warning), " ",
         "This will also set your user.email from `",
         original_git_user_email, "` to `", new_git_user_email, "`.\n"
       ),
@@ -192,7 +192,7 @@ assemble_confirmation_message <- function(key, global) {
 
 communicate_needed_key_upload <- function(key) {
   message(
-    crayon::red(clisymbols::symbol$bullet), " ",
+    crayon::red(cli::symbol$bullet), " ",
     crayon::silver(
       "The next step is uploading the public key",
       "to GitHub or alternative (unless it is already uploaded),",

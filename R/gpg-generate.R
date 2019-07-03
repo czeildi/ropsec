@@ -57,7 +57,7 @@ generate_key_with_checked_params <- function(name, email, passphrase) {
   )
   cat(
     crayon::green(
-      clisymbols::symbol$tick,
+      cli::symbol$tick,
       "Key with id `" %+% key %+% "` successfully generated.\n"
     )
   )

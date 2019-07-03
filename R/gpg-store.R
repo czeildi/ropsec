@@ -86,7 +86,7 @@ gh_store_key <- function(pubkey, .token, open_url, email_for_key) {
   if (inherits(gh_attempt, "try-error")) {
     if (inherits(attr(gh_attempt, "condition"), "http_error_422")) {
       message(
-        crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is already stored on GitHub.\n"),
+        crayon::green(cli::symbol$tick, " ", "Public GPG key is already stored on GitHub.\n"),
         crayon::silver("You can double-check at", crayon::underline("https://github.com/settings/keys"), ".")
       )
     } else if (inherits(attr(gh_attempt, "condition"), "http_error_401")) {
@@ -103,7 +103,7 @@ gh_store_key <- function(pubkey, .token, open_url, email_for_key) {
     communicate_unverified_key("gh", email_for_key, open_url)
   } else {
     message(
-      crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is uploaded to GitHub.\n"),
+      crayon::green(cli::symbol$tick, " ", "Public GPG key is uploaded to GitHub.\n"),
       crayon::silver("You can double-check at", crayon::underline("https://github.com/settings/keys"), ".")
     )
   }
@@ -117,7 +117,7 @@ gl_store_key <- function(pubkey, .token, gitlab_url, open_url, email_for_key) {
     gl_email <- gl_user_email(gitlab_url, .token)
     if (isTRUE(gl_email == email_for_key)) {
       message(
-        crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is successfully stored on Gitlab.\n"),
+        crayon::green(cli::symbol$tick, " ", "Public GPG key is successfully stored on Gitlab.\n"),
         crayon::silver("You can double-check at", crayon::underline(paste0(gitlab_url, "/profile/gpg_keys")), ".")
       )
       return(invisible(pubkey))
@@ -132,7 +132,7 @@ gl_store_key <- function(pubkey, .token, gitlab_url, open_url, email_for_key) {
     response_content <- httr::content(gl_attempt)
     if (isTRUE(purrr::pluck(httr::content(gl_attempt), "message", "key", 1) == "has already been taken")) {
       message(
-        crayon::green(clisymbols::symbol$tick, " ", "Public GPG key is already stored on Gitlab.\n"),
+        crayon::green(cli::symbol$tick, " ", "Public GPG key is already stored on Gitlab.\n"),
         crayon::silver("You can double-check at", crayon::underline(paste0(gitlab_url, "/profile/gpg_keys")), ".")
       )
       return(invisible(pubkey))
@@ -147,7 +147,7 @@ gl_store_key <- function(pubkey, .token, gitlab_url, open_url, email_for_key) {
 communicate_pubkey_for_manual_addition <- function(pubkey, service, gitlab_url = NULL,
                                                    open_url, reason) {
   message(
-    crayon::red(clisymbols::symbol$cross), " ", crayon::silver(reason)
+    crayon::red(cli::symbol$cross), " ", crayon::silver(reason)
   )
   if (service == "gh") {
     new_url <- "https://github.com/settings/gpg/new"
@@ -157,15 +157,15 @@ communicate_pubkey_for_manual_addition <- function(pubkey, service, gitlab_url =
   if (is_clipr_available()) {
     clipr::write_clip(pubkey)
     message(crayon::green(
-      clisymbols::symbol$tick, "The public key is on your clipboard."
+      cli::symbol$tick, "The public key is on your clipboard."
     ))
     message(
-      crayon::red(clisymbols::symbol$bullet), " ",
+      crayon::red(cli::symbol$bullet), " ",
       crayon::silver("Paste it at ", crayon::underline(new_url), ".\n")
     )
   } else {
     message(
-      crayon::red(clisymbols::symbol$bullet), " ",
+      crayon::red(cli::symbol$bullet), " ",
       crayon::silver("Copy the text below and paste it at ", crayon::underline(new_url), ".\n")
     )
     cat(pubkey)
@@ -179,17 +179,17 @@ communicate_pubkey_for_manual_addition <- function(pubkey, service, gitlab_url =
 
 communicate_pubkey_wo_service <- function(pubkey) {
   message(
-    crayon::red(clisymbols::symbol$cross), " ",
+    crayon::red(cli::symbol$cross), " ",
     crayon::silver("Could not automatically upload public key as no service is provided. (`'gh'` or `'gl'` is available)")
   )
   if (is_clipr_available()) {
     clipr::write_clip(pubkey)
     message(crayon::green(
-      clisymbols::symbol$tick, "The public key is on your clipboard."
+      cli::symbol$tick, "The public key is on your clipboard."
     ))
   } else {
     message(
-      crayon::red(clisymbols::symbol$bullet), " ",
+      crayon::red(cli::symbol$bullet), " ",
       crayon::silver("The public key is the text below.\n")
     )
     cat(pubkey)
@@ -223,7 +223,7 @@ communicate_unverified_key <- function(service, email_for_key, open_url,
     )
   }
   warning(
-    crayon::red(clisymbols::symbol$warning), " Uploaded key is unverified. ",
+    crayon::red(cli::symbol$warning), " Uploaded key is unverified. ",
     "Delete the uploaded key by hand (", crayon::underline(delete_url), ") and try again.",
     call. = FALSE
   )

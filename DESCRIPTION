@@ -44,7 +44,7 @@ Imports:
     sys,
     getPass,
     crayon,
-    clisymbols,
+    cli,
     clipr
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
