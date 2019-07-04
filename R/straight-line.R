@@ -60,9 +60,9 @@
 #' @export
 full_on_audit <- function(quiet = TRUE) {
   if (is_windows()) {
-    message("Not yet!")
+    message("Full on audit is not yet available on Windows!")
   } else if (is_linux()) {
-    message("Not yet!")
+    message("Full on audit is not yet available on Linux!")
   } else { # hopefully macOS
     .macos_core_audit(quiet)
   }
