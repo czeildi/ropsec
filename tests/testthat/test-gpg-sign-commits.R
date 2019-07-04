@@ -27,7 +27,7 @@ describe("sign_commits_with_key", {
       "get_key_candidates",
       data.frame(id = "test_id", stringsAsFactors = FALSE)
     )
-    sign_commits_with_key()
+    sign_commits_with_key("test", "test")
     mockery::expect_args(sign_mock, 1, key = "test_id", global = TRUE)
   })
 
