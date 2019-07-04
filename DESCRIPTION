@@ -1,7 +1,7 @@
 Package: ropsec
 Type: Package
 Title: Personal Workstation Safety Check
-Version: 0.2.0.9000
+Version: 0.2.1
 Authors@R: c(
     person("Ildiko", "Czeller", email = "czeildi@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9418-4589")), 
