@@ -104,7 +104,10 @@ set_key_to_sign_commits <- function(key, global) {
       "First, you will be asked to confirm the overwrite of your local config",
       " and then the setting of your global config."
     )
-    set_key_to_sign_commits(key, global = FALSE)
+    key <- set_key_to_sign_commits(key, global = FALSE)
+    if (is.null(key)) {
+      return(invisible(NULL))
+    }
   }
   confirmation_message <- assemble_confirmation_message(key, global)
   if (!require_confirmation_from_user(confirmation_message)) {
@@ -135,6 +138,7 @@ filter_keys_on_name_and_email_if_provided <- function(keys, user_name, user_emai
 
 stop_due_to_multiple_keys <- function(key_candidates) {
   stop(
+    "\n",
     paste0(utils::capture.output(key_candidates), collapse = "\n"), "\n",
     crayon::red(cli::symbol$cross), " ",
     "There are multiple keys,\n",
