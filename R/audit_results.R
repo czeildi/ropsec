@@ -8,10 +8,12 @@
 #' @examples \dontrun{summarize_system_checks()}
 summarize_system_checks <- function() {
   if (is_windows()) {
-    message("System check summary is not yet available for Windows!")
+    system.file("tests", "simple", "windows-simple-test.R", package = "ropsec", mustWork = TRUE) %>%
+      testthat::test_file()
   } else if (is_linux()) {
-    message("System check summary is not yet available for Linux!")
-  } else { # hopefully macOS
+    system.file("tests", "simple", "linux-simple-test.R", package = "ropsec", mustWork = TRUE) %>%
+      testthat::test_file()
+  } else {
     system.file("tests", "simple", "macos-simple-test.R", package = "ropsec", mustWork = TRUE) %>%
       testthat::test_file()
   }
