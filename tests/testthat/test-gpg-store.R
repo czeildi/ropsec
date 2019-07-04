@@ -2,6 +2,12 @@ context("store public key")
 
 describe("store_public_key", {
   describe("no service or service independent error", {
+    it("error if user supplies key in wrong format", {
+      expect_error(
+        store_public_key(""),
+        "key should be the id or fingerprint of an existing gpg key"
+      )
+    })
     it("error if user tries to upload non-existent key", {
       mockery::stub(store_public_key, "gpg::gpg_export", "")
       expect_error(

@@ -45,6 +45,13 @@
 #' }
 store_public_key <- function(key, service = NULL, .token = NULL,
                              gitlab_url = NULL, open_url = is_interactive()) {
+  if (missing(key) | key == "") {
+    stop(
+      "key should be the id or fingerprint of an existing gpg key on your system,",
+      " for example the return value of `sign_commits_with_key()`.",
+      call. = FALSE
+    )
+  }
   pubkey <- gpg::gpg_export(key)
   if (pubkey == "") communicate_no_key(key)
   email_for_key <- extract_email_for_key(key)
@@ -204,6 +211,7 @@ communicate_no_key <- function(key) {
     call. = FALSE
   )
 }
+
 communicate_unverified_key <- function(service, email_for_key, open_url,
                                        gitlab_url = NULL, gl_email = NULL) {
   if (service == "gh") {
@@ -224,7 +232,9 @@ communicate_unverified_key <- function(service, email_for_key, open_url,
   }
   warning(
     crayon::red(cli::symbol$warning), " Uploaded key is unverified. ",
-    "Delete the uploaded key by hand (", crayon::underline(delete_url), ") and try again.",
+    specific_warning_message, "\n",
+    crayon::red(cli::symbol$bullet),
+    crayon::silver(" Delete the uploaded key by hand (", crayon::underline(delete_url), ") and try again."),
     call. = FALSE
   )
   if (open_url) {
