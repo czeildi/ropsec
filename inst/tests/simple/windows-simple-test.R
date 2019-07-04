@@ -13,7 +13,7 @@ test_that("ssh has public/private keys", {
 context("SSH Configuration - key size")
 test_that("ssh key size is appropriate", {
   if (file.exists(fs::path_expand("~/.ssh/id_rsa.pub"))) {
-    x <- openssl::read_pubkey("~/.ssh/id_rsa.pub")
+    x <- openssl::read_pubkey(fs::path_expand("~/.ssh/id_rsa.pub"))
     expect_true(x$size >= 2048, label = sprintf("Key size of [%s] is below recommended value", x$size))
   }
 })
