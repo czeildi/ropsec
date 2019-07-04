@@ -45,7 +45,8 @@ Imports:
     getPass,
     crayon,
     cli,
-    clipr
+    clipr,
+    fs
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
