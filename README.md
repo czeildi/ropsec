@@ -1,12 +1,14 @@
 
-![](./man/figures/Loose_lips_might_sink_ships.jpg)
-
 rOpenSci Unconf 18 Project : ropsec
 ===================================
 
-[![Travis build status](https://travis-ci.org/ropenscilabs/ropsec.svg?branch=master)](https://travis-ci.org/ropenscilabs/ropsec) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/55vx8b5jckpa216a?svg=true)](https://ci.appveyor.com/project/czeildi/ropsec-w5fnj) [![Coverage status](https://codecov.io/gh/ropenscilabs/ropsec/branch/master/graph/badge.svg)](https://codecov.io/github/ropenscilabs/ropsec?branch=master)
+<!-- badges: start -->
+[![Travis build status](https://travis-ci.org/ropenscilabs/ropsec.svg?branch=master)](https://travis-ci.org/ropenscilabs/ropsec) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/55vx8b5jckpa216a?svg=true)](https://ci.appveyor.com/project/czeildi/ropsec-w5fnj) [![Coverage status](https://codecov.io/gh/ropenscilabs/ropsec/branch/master/graph/badge.svg)](https://codecov.io/github/ropenscilabs/ropsec?branch=master) <!-- badges: end -->
 
 Personal Workstation Safety Checks and Utilities
+
+<img src="man/figures/Loose_lips_might_sink_ships.jpg" align="right"/>
+======================================================================
 
 What's Inside The Tin
 ---------------------

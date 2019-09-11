@@ -16,3 +16,4 @@
 ^doc$
 ^tmp$
 ^docs$
+^codemeta\.json$

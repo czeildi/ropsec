@@ -16,7 +16,7 @@ Description: Sobriety checkpoints are designed to help ensure personal and publi
     safety. Methods are provided to run "sobriety" checks on your system to ensure
     your computing environment is as safe as possible from the perspectives of
     confidentiality and integrity.
-URL: https://github.com/ropenscilabs/ropsec
+URL: https://docs.ropensci.org/ropsec/, https://github.com/ropenscilabs/ropsec
 BugReports: https://github.com/ropenscilabs/ropsec/issues
 SystemRequirements: lynis (macOS/Linux); gnupg;
 Encoding: UTF-8

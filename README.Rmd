@@ -6,7 +6,6 @@ output: rmarkdown::github_document
 options(width=120)
 ```
 
-![](./man/figures/Loose_lips_might_sink_ships.jpg)
 
 # rOpenSci Unconf 18 Project : ropsec
 
@@ -17,6 +16,8 @@ options(width=120)
 <!-- badges: end -->
 
 Personal Workstation Safety Checks and Utilities
+
+# <img src="man/figures/Loose_lips_might_sink_ships.jpg" align="right"/>
 
 ## What's Inside The Tin
 
