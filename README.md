@@ -7,7 +7,7 @@ rOpenSci Unconf 18 Project : ropsec
 
 Personal Workstation Safety Checks and Utilities
 
-<img src="man/figures/Loose_lips_might_sink_ships.jpg"/>
+<img src="man/figures/Loose_lips_might_sink_ships.jpg" style="width: 50%; height: 50%"/>
 
 What's Inside The Tin
 ---------------------
