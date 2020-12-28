@@ -3,7 +3,6 @@
 \docType{package}
 \name{ropsec}
 \alias{ropsec}
-\alias{ropsec-package}
 \title{Personal Workstation Safety Check}
 \description{
 ropsec checkpoints are designed to help ensure personal and public

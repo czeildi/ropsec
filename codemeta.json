@@ -315,6 +315,5 @@
   ],
   "releaseNotes": "https://github.com/ropenscilabs/ropsec/blob/master/NEWS.md",
   "readme": "https://github.com/ropenscilabs/ropsec/blob/master/README.md",
-  "contIntegration": ["https://travis-ci.org/ropenscilabs/ropsec", "https://ci.appveyor.com/project/czeildi/ropsec-w5fnj", "https://codecov.io/github/ropenscilabs/ropsec?branch=master"],
   "keywords": ["unconf18", "r", "r-package", "rstats", "unconf"]
 }

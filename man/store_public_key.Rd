@@ -4,14 +4,19 @@
 \alias{store_public_key}
 \title{Add a public key to your GitHub or gitlab or other account}
 \usage{
-store_public_key(key, service = NULL, .token = NULL,
-  gitlab_url = NULL, open_url = is_interactive())
+store_public_key(
+  key,
+  service = NULL,
+  .token = NULL,
+  gitlab_url = NULL,
+  open_url = is_interactive()
+)
 }
 \arguments{
 \item{key}{A character string containing the ID of a key to use, use the
 return value of \code{\link[=sign_commits_with_key]{sign_commits_with_key()}}. If you are not sure what key
 you want to use, you can list your locally available keys with
-\code{\link[gpg:gpg_list_keys]{gpg::gpg_list_keys()}}. The email address corresponding to this key must be
+\code{\link[gpg:gpg_keys]{gpg::gpg_list_keys()}}. The email address corresponding to this key must be
 identical to the email address that you use with GitHub/Gitlab etc.}
 
 \item{service}{\code{NULL} by default. Currently supported services: \code{"gh"} for GitHub (access
@@ -26,7 +31,7 @@ Or Gitlab personal access token with at least \code{api} scope enabled.
 Supply this with \code{service = "gl"}. If your PAT is stored in an environment
 variable \code{GITHUB_PAT} (for \code{service = "gh"}) or \code{GITLAB_PAT} (for \code{service = "gl"}) you do not need to supply the token manually.}
 
-\item{gitlab_url}{\code{NULL by default}, or your gitlab url for \code{service = "gl"}.}
+\item{gitlab_url}{\verb{NULL by default}, or your gitlab url for \code{service = "gl"}.}
 
 \item{open_url}{logical, whether to open relevant URLs automatically.}
 }
@@ -38,7 +43,7 @@ public key on your clipboard for you to copy manually into GitHub/Gitlab or else
 \details{
 If you do not have a Personal Access Token set up or you want to store your
 key on other service you can either call this function without a token and
-then add the printed public key manually or call \code{cat(}\code{\link[gpg:gpg_export]{gpg::gpg_export()}}\code{)}
+then add the printed public key manually or call \verb{cat(}\code{\link[gpg:gpg_keys]{gpg::gpg_export()}}\verb{)}
 with \code{newkey} and add the returned public key manually. For more information
 see \href{https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/}{GitHub tokens}
 or \href{https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html}{gitlab tokens}.

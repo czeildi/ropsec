@@ -17,3 +17,6 @@
 ^tmp$
 ^docs$
 ^codemeta\.json$
+^README\.Rmd$
+^.idea$
+_pkgdown.yml
